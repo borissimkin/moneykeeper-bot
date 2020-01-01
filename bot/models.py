@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import Integer, Column, String, Date, ForeignKey, create_engine
+from sqlalchemy import Integer, Column, String, Date, ForeignKey, create_engine, Float
 from sqlalchemy.ext.declarative import declarative_base
 
 engine = create_engine('sqlite:///database.db', echo=True)
@@ -32,6 +32,7 @@ class Earning(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))
     category_id = Column(Integer, ForeignKey('category_earning.id'))
+    amount_money = Column(Float)
 
 
 class CategoryConsumption(Base):
@@ -45,7 +46,10 @@ class Consumption(Base):
     __tablename__ = 'consumption'
 
     id = Column(Integer, primary_key=True)
-    category = Column(String, nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    category_id = Column(Integer, ForeignKey('category_consumption.id'))
+    amount_money = Column(Float)
+
 
 
 Base.metadata.create_all(engine)
