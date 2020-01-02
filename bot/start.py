@@ -5,7 +5,7 @@ from bot import bot
 
 
 class StartHandler:
-    command = 'start'
+    text_command = 'start'
 
     @classmethod
     def start(cls, update: Update, context: CallbackContext):

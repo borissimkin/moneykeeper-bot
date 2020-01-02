@@ -5,7 +5,7 @@ from bot.start import StartHandler
 
 
 def start_handlers():
-    dispatcher.add_handler(CommandHandler('start', StartHandler.start))
+    dispatcher.add_handler(CommandHandler(StartHandler.text_command, StartHandler.start))
 
 
 if __name__ == '__main__':
