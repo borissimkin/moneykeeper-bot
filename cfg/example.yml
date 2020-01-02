@@ -1,1 +1,2 @@
-token: your_token
+telegram:
+  token: your_token
