@@ -44,7 +44,7 @@ class CategoryEarning(Base):
         return f"<CategoryEarning('{self.id}', '{self.category}')>"
 
     def __eq__(self, other):
-        return isinstance(other, CategoryConsumption) and other.id == self.id
+        return isinstance(other, CategoryEarning) and other.id == self.id
 
 
 class Earning(Base):
@@ -53,7 +53,7 @@ class Earning(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))
     category_id = Column(Integer, ForeignKey('category_earning.id'))
-    amount_money = Column(Float)
+    amount_money = Column(Float, default=0)
 
     def __repr__(self):
         return f"<Earning('{self.id}', '{self.user_id}', '{self.category_id}', " \
@@ -82,11 +82,11 @@ class Consumption(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))
     category_id = Column(Integer, ForeignKey('category_consumption.id'))
-    amount_money = Column(Float)
+    amount_money = Column(Float, default=0)
 
     def __repr__(self):
         return f"<Consumption('{self.id}', '{self.user_id}', '{self.category_id}', " \
-            f"'{self.amount_money})>'"
+            f"'{self.amount_money}')>"
 
     def __eq__(self, other):
         return isinstance(other, Consumption) and other.id == self.id
