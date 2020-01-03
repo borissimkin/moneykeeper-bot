@@ -1,6 +1,8 @@
 import datetime
+from contextlib import contextmanager
 
 from sqlalchemy import Integer, Column, String, ForeignKey, create_engine, Float, DateTime
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -32,6 +34,15 @@ class User(Base):
     def update_activity(self, now):
         self.last_activity = now
         session.commit()
+
+    def update_username(self, username):
+        if username != self.telegram_username:
+            self.telegram_username = username
+            session.commit()
+
+    def get_username(self):
+        username = self.telegram_username
+        return username if username else f'{self.first_name} {self.last_name}'
 
 
 class CategoryEarning(Base):
@@ -92,4 +103,5 @@ class Consumption(Base):
         return isinstance(other, Consumption) and other.id == self.id
 
 
-Base.metadata.create_all(engine)
+if __name__ == '__main__':
+    Base.metadata.create_all(engine)
