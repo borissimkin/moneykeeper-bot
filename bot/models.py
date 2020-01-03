@@ -57,6 +57,11 @@ class CategoryEarning(Base):
     def __eq__(self, other):
         return isinstance(other, CategoryEarning) and other.id == self.id
 
+    @classmethod
+    def create_default_categories(cls):
+        session.add(CategoryEarning(category='Работа'))
+        session.commit()
+
 
 class Earning(Base):
     __tablename__ = 'earning'
@@ -86,6 +91,18 @@ class CategoryConsumption(Base):
     def __eq__(self, other):
         return isinstance(other, CategoryConsumption) and other.id == self.id
 
+    @classmethod
+    def create_default_categories(cls):
+        session.add_all([CategoryConsumption(category='Продукты'),
+                         CategoryConsumption(category='Транспорт'),
+                         CategoryConsumption(category='Кафе'),
+                         CategoryConsumption(category='Подарки'),
+                         CategoryConsumption(category='Досуг'),
+                         CategoryConsumption(category='Покупки'),
+                         CategoryConsumption(category='Коммунальные'),
+                         CategoryConsumption(category='Здоровье')])
+        session.commit()
+
 
 class Consumption(Base):
     __tablename__ = 'consumption'
@@ -105,3 +122,5 @@ class Consumption(Base):
 
 if __name__ == '__main__':
     Base.metadata.create_all(engine)
+    CategoryEarning.create_default_categories()
+    CategoryConsumption.create_default_categories()
