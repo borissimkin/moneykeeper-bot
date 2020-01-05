@@ -4,9 +4,15 @@ def make_buttons_for_choose_category(count_buttons_per_row, categories):
     row = []
     for index, category in enumerate(categories):
         row.append(category.category)
-        if (index+1) % count_buttons_per_row == 0 and index > 0:
+        if row_is_full(index, count_buttons_per_row):
             buttons.append(row)
             row = []
     if row:
         buttons.append(row)
     return buttons
+
+
+def row_is_full(index, count_buttons_per_row):
+    if (index + 1) % count_buttons_per_row == 0 and index > 0:
+        return True
+    return False

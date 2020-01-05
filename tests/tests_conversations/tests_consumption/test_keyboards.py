@@ -1,7 +1,7 @@
 import unittest
 from unittest import mock
 
-from bot.conversations.consumption.keyboards import make_buttons_for_choose_category
+from bot.conversations.consumption.keyboards import make_buttons_for_choose_category, row_is_full
 from bot.models import CategoryConsumption
 
 
@@ -29,3 +29,14 @@ class TestMakeButtonsForChooseCategory(unittest.TestCase):
         expected = [[self.category.category, self.category.category]]
         answer = make_buttons_for_choose_category(3, categories)
         self.assertListEqual(answer, expected)
+
+
+class TestRowIsFull(unittest.TestCase):
+    def test_row_full(self):
+        self.assertTrue(row_is_full(2, 3))
+
+    def test_row_not_full(self):
+        self.assertFalse(row_is_full(1, 3))
+
+    def test_row_equal_zero(self):
+        self.assertFalse(row_is_full(0, 3))
