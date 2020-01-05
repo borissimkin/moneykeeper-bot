@@ -1,0 +1,6 @@
+
+
+class States:
+    TO_WRITE_AMOUNT_MONEY, TO_CHOOSE_CATEGORY,\
+        TO_CONFIRM_ADD_CONSUMPTION = range(3)
+
