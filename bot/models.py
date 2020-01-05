@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from sqlalchemy import Integer, Column, String, ForeignKey, create_engine, Float, DateTime
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 
 engine = create_engine('sqlite:///database.db', echo=True)
 Base = declarative_base()
@@ -90,6 +90,15 @@ class CategoryConsumption(Base):
 
     def __eq__(self, other):
         return isinstance(other, CategoryConsumption) and other.id == self.id
+
+    @classmethod
+    def get_all_categories(cls):
+        return session.query(cls).all()
+
+    @classmethod
+    def get_all_categories_by_text(cls):
+        categories = session.query(cls).all()
+        return [c.category for c in categories]
 
     @classmethod
     def create_default_categories(cls):

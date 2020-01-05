@@ -12,7 +12,7 @@ class StartHandler:
 
     @classmethod
     def start(cls, update: Update, context: CallbackContext):
-        if cls.check_user_in_db(update.message.from_user.id):
+        if not cls.check_user_in_db(update.message.from_user.id):
             cls.add_user_in_db(update)
             cls.send_welcome_text(update.message.from_user.id)
 

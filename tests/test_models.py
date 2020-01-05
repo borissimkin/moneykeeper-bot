@@ -188,7 +188,3 @@ class TestConsumption(unittest.TestCase):
             f"'{self.consumption['amount_money']}')>"
         consumption = session.query(Consumption).get(1)
         self.assertEqual(repr(consumption), expected)
-
-
-if __name__ == '__main__':
-    unittest.main()
