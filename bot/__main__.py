@@ -1,8 +1,8 @@
-from telegram.ext import CommandHandler, ConversationHandler, Filters
+from telegram.ext import CommandHandler
 
 from bot import dispatcher, updater
+from bot.commands.start import StartHandler
 from bot.conversations.consumption.handlers import add_consumption
-from bot.start import StartHandler
 
 
 def start_handlers():
