@@ -3,11 +3,11 @@ from telegram import Update, ReplyKeyboardRemove, ReplyKeyboardMarkup
 from telegram.ext import ConversationHandler, MessageHandler, Filters, CallbackContext, CommandHandler
 
 from bot import bot, config
-from bot.keyboards import keyboard_confirm, keyboard_exit
+from bot.keyboards import keyboard_confirm, keyboard_exit, make_buttons_for_choose_category
 from bot.buttons import text_button_cancel, text_button_confirm
-from bot.conversations.consumption.keyboards import make_buttons_for_choose_category
 from bot.conversations.consumption.messages import text_to_choose_category, text_exit_point, text_timeout, \
-    text_confirm_add_consumption, text_success_add_consumption, text_error_enter_amount_money, text_to_write_money
+     text_success_add_consumption, text_error_enter_amount_money, text_to_write_money
+from bot.messages import text_confirm_add_transaction
 from bot.models import CategoryConsumption, session, User, Consumption
 from bot.utils import exit_dialog, back, update_username, update_activity, add_button_cancel, add_buttons_exit_and_back
 from .states import States
@@ -16,15 +16,6 @@ from .states import States
 @update_username
 @update_activity
 def entry_point(update: Update, context: CallbackContext):
-    if update.message.text == '/add_consumption':
-        return entry_point_from_command(update, context)
-    context.user_data['exit_func'] = exit_point
-    return handler_write_money(update, context)
-
-
-@update_username
-@update_activity
-def entry_point_from_command(update: Update, context: CallbackContext):
     context.user_data['exit_func'] = exit_point
     return to_write_money(update, context)
 
@@ -60,7 +51,7 @@ def handler_to_choose_category(update: Update, context: CallbackContext):
 def to_confirm_add_consumption(update: Update, context: CallbackContext):
     context.user_data['back_func'] = to_choose_category
     bot.send_message(chat_id=update.message.from_user.id,
-                     text=text_confirm_add_consumption(context.user_data['amount_money_consumption'],
+                     text=text_confirm_add_transaction(context.user_data['amount_money_consumption'],
                                                        context.user_data['category_consumption']),
                      reply_markup=keyboard_confirm,
                      parse_mode=telegram.ParseMode.HTML)
@@ -74,6 +65,7 @@ def to_write_money(update, context):
     return States.TO_WRITE_AMOUNT_MONEY
 
 
+@exit_dialog
 def handler_write_money(update: Update, context: CallbackContext):
     try:
         amount_money = float(update.message.text)
@@ -132,7 +124,7 @@ def add_consumption_in_db(telegram_user_id, amount_money, category_text):
 
 add_consumption = ConversationHandler(
     entry_points=[
-        MessageHandler(Filters.regex('^(\\d{1,})$|^(/add_consumption)$'),
+        CommandHandler('add_consumption',
                        entry_point,
                        pass_user_data=True)],
     states={
@@ -152,7 +144,7 @@ add_consumption = ConversationHandler(
 
 
     },
-    conversation_timeout=config['conversations']['consumption']['timeout'],
+    conversation_timeout=config['conversations']['timeout'],
     fallbacks=[CommandHandler('exit_point', exit_point)],
 
     name="consumption",

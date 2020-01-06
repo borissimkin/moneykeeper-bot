@@ -17,15 +17,6 @@ def text_to_write_money():
     return 'Введите количество денег, которое вы потратили.'
 
 
-def text_confirm_add_consumption(amount_money, category):
-    morph = pymorphy2.MorphAnalyzer()
-    money_morph = morph.parse('рубль')[0]
-    return 'Записать <b>{} {}</b> на категорию <b>{}</b>?'.format(amount_money,
-                                                                  money_morph.make_agree_with_number(int(
-                                                                      amount_money)).word,
-                                                                  category)
-
-
 def text_success_add_consumption():
     return 'Расход успешно записан!'
 

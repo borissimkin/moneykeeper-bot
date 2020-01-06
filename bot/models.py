@@ -62,6 +62,15 @@ class CategoryEarning(Base):
         session.add(CategoryEarning(category='Работа'))
         session.commit()
 
+    @classmethod
+    def get_all_categories(cls):
+        return session.query(cls).all()
+
+    @classmethod
+    def get_all_categories_by_text(cls):
+        categories = session.query(cls).all()
+        return [c.category for c in categories]
+
 
 class Earning(Base):
     __tablename__ = 'earning'
