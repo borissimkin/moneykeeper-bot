@@ -40,7 +40,8 @@ def handler_timeout(update: Update, context: CallbackContext):
 @exit_dialog
 def handler_to_choose_category(update: Update, context: CallbackContext):
     text = update.message.text
-    right_answers = CategoryConsumption.get_all_categories_by_text()
+    user = session.query(User).filter(User.telegram_user_id == update.message.from_user.id).first()
+    right_answers = CategoryConsumption.get_all_categories_by_text(user.id)
     if text in right_answers:
         context.user_data['category_consumption'] = text
         return to_confirm_add_consumption(update, context)
@@ -90,8 +91,9 @@ def send_message_error_enter_amount_money(telegram_user_id):
 
 
 def send_message_to_choose_category(telegram_user_id, amount_money):
+    user = session.query(User).filter(User.telegram_user_id == telegram_user_id).first()
     buttons = make_buttons_for_choose_category(count_buttons_per_row=config['buttons_per_row'],
-                                               categories=CategoryConsumption.get_all_categories())
+                                               categories=CategoryConsumption.get_all_categories(user.id))
     buttons = add_buttons_exit_and_back(buttons)
     keyboard = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
     bot.send_message(chat_id=telegram_user_id,
