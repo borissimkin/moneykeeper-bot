@@ -50,6 +50,7 @@ class CategoryEarning(Base):
 
     id = Column(Integer, primary_key=True)
     category = Column(String, nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id'))
 
     def __repr__(self):
         return f"<CategoryEarning('{self.id}', '{self.category}')>"
@@ -58,17 +59,17 @@ class CategoryEarning(Base):
         return isinstance(other, CategoryEarning) and other.id == self.id
 
     @classmethod
-    def create_default_categories(cls):
-        session.add(CategoryEarning(category='Работа'))
+    def create_default_categories(cls, user_id):
+        session.add(CategoryEarning(user_id=user_id, category='Работа'))
         session.commit()
 
     @classmethod
-    def get_all_categories(cls):
-        return session.query(cls).all()
+    def get_all_categories(cls, user_id):
+        return session.query(cls).filter(cls.user_id == user_id).all()
 
     @classmethod
-    def get_all_categories_by_text(cls):
-        categories = session.query(cls).all()
+    def get_all_categories_by_text(cls, user_id):
+        categories = cls.get_all_categories(user_id)
         return [c.category for c in categories]
 
 
@@ -92,6 +93,7 @@ class CategoryConsumption(Base):
     __tablename__ = 'category_consumption'
 
     id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
     category = Column(String, nullable=False)
 
     def __repr__(self):
@@ -101,24 +103,24 @@ class CategoryConsumption(Base):
         return isinstance(other, CategoryConsumption) and other.id == self.id
 
     @classmethod
-    def get_all_categories(cls):
-        return session.query(cls).all()
+    def get_all_categories(cls, user_id):
+        return session.query(cls).filter(cls.user_id == user_id).all()
 
     @classmethod
-    def get_all_categories_by_text(cls):
-        categories = session.query(cls).all()
+    def get_all_categories_by_text(cls, user_id):
+        categories = cls.get_all_categories(user_id)
         return [c.category for c in categories]
 
     @classmethod
-    def create_default_categories(cls):
-        session.add_all([CategoryConsumption(category='Продукты'),
-                         CategoryConsumption(category='Транспорт'),
-                         CategoryConsumption(category='Кафе'),
-                         CategoryConsumption(category='Подарки'),
-                         CategoryConsumption(category='Досуг'),
-                         CategoryConsumption(category='Покупки'),
-                         CategoryConsumption(category='Коммунальные'),
-                         CategoryConsumption(category='Здоровье')])
+    def create_default_categories(cls, user_id):
+        session.add_all([CategoryConsumption(user_id=user_id, category='Продукты🍞'),
+                         CategoryConsumption(user_id=user_id, category='Транспорт🚎'),
+                         CategoryConsumption(user_id=user_id, category='Кафе🍕'),
+                         CategoryConsumption(user_id=user_id, category='Подарки🎁'),
+                         CategoryConsumption(user_id=user_id, category='Досуг🍿'),
+                         CategoryConsumption(user_id=user_id, category='Покупки🛍'),
+                         CategoryConsumption(user_id=user_id, category='Коммунальные🏠'),
+                         CategoryConsumption(user_id=user_id, category='Здоровье💊')])
         session.commit()
 
 
@@ -140,5 +142,3 @@ class Consumption(Base):
 
 if __name__ == '__main__':
     Base.metadata.create_all(engine)
-    CategoryEarning.create_default_categories()
-    CategoryConsumption.create_default_categories()

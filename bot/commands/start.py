@@ -4,7 +4,7 @@ from telegram import Update
 from telegram.ext import CallbackContext
 
 from bot import bot
-from bot.models import session, User
+from bot.models import session, User, CategoryEarning, CategoryConsumption
 
 
 class StartHandler:
@@ -14,6 +14,7 @@ class StartHandler:
     def start(cls, update: Update, context: CallbackContext):
         if not cls.check_user_in_db(update.message.from_user.id):
             cls.add_user_in_db(update)
+            cls.create_default_categories_for_earning_and_consumption(update.message.from_user.id)
             cls.send_welcome_text(update.message.from_user.id)
 
     @staticmethod
@@ -23,6 +24,12 @@ class StartHandler:
         session.add(User(telegram_username=username, telegram_user_id=user.id,
                          first_name=user.first_name, last_name=user.last_name))
         session.commit()
+
+    @staticmethod
+    def create_default_categories_for_earning_and_consumption(telegram_user_id):
+        user = session.query(User).filter(User.telegram_user_id == telegram_user_id).first()
+        CategoryEarning.create_default_categories(user.id)
+        CategoryConsumption.create_default_categories(user.id)
 
     @staticmethod
     def check_user_in_db(user_id):
