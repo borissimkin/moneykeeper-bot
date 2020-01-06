@@ -25,14 +25,5 @@ def text_to_choose_category(amount_money):
                                                                          make_agree_with_number(int(amount_money)).word)
 
 
-def text_confirm_add_earning(amount_money, category):
-    morph = pymorphy2.MorphAnalyzer()
-    money_morph = morph.parse('рубль')[0]
-    return 'Записать <b>{} {}</b> на категорию <b>{}</b>?'.format(amount_money,
-                                                                  money_morph.make_agree_with_number(int(
-                                                                      amount_money)).word,
-                                                                  category)
-
-
 def text_success_add_earning():
     return 'Доход успешно записан!'

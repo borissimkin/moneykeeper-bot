@@ -5,9 +5,10 @@ from telegram.ext import MessageHandler, ConversationHandler, Filters, CallbackC
 from bot import config, bot
 from bot.buttons import text_button_confirm
 from bot.conversations.earning.messages import text_timeout, text_exit_point, text_error_enter_amount_money, \
-    text_to_choose_category, text_confirm_add_earning, text_success_add_earning, text_to_write_money
+    text_to_choose_category, text_success_add_earning, text_to_write_money
 from bot.conversations.earning.states import States
 from bot.keyboards import keyboard_exit, make_buttons_for_choose_category, keyboard_confirm
+from bot.messages import text_confirm_add_transaction
 from bot.models import CategoryEarning, session, User, Earning
 from bot.utils import update_username, update_activity, add_buttons_exit_and_back, exit_dialog, back
 
@@ -56,8 +57,8 @@ def handler_to_choose_category(update: Update, context: CallbackContext):
 def to_confirm_add_earning(update: Update, context: CallbackContext):
     context.user_data['back_func'] = to_choose_category
     bot.send_message(chat_id=update.message.from_user.id,
-                     text=text_confirm_add_earning(context.user_data['amount_money_earning'],
-                                                   context.user_data['category_earning']),
+                     text=text_confirm_add_transaction(context.user_data['amount_money_earning'],
+                                                       context.user_data['category_earning']),
                      reply_markup=keyboard_confirm,
                      parse_mode=telegram.ParseMode.HTML)
     return States.TO_CONFIRM_ADD_EARNING

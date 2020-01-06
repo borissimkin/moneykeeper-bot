@@ -6,7 +6,8 @@ from bot import bot, config
 from bot.keyboards import keyboard_confirm, keyboard_exit, make_buttons_for_choose_category
 from bot.buttons import text_button_cancel, text_button_confirm
 from bot.conversations.consumption.messages import text_to_choose_category, text_exit_point, text_timeout, \
-    text_confirm_add_consumption, text_success_add_consumption, text_error_enter_amount_money, text_to_write_money
+     text_success_add_consumption, text_error_enter_amount_money, text_to_write_money
+from bot.messages import text_confirm_add_transaction
 from bot.models import CategoryConsumption, session, User, Consumption
 from bot.utils import exit_dialog, back, update_username, update_activity, add_button_cancel, add_buttons_exit_and_back
 from .states import States
@@ -50,7 +51,7 @@ def handler_to_choose_category(update: Update, context: CallbackContext):
 def to_confirm_add_consumption(update: Update, context: CallbackContext):
     context.user_data['back_func'] = to_choose_category
     bot.send_message(chat_id=update.message.from_user.id,
-                     text=text_confirm_add_consumption(context.user_data['amount_money_consumption'],
+                     text=text_confirm_add_transaction(context.user_data['amount_money_consumption'],
                                                        context.user_data['category_consumption']),
                      reply_markup=keyboard_confirm,
                      parse_mode=telegram.ParseMode.HTML)
