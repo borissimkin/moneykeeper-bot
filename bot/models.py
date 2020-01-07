@@ -44,6 +44,10 @@ class User(Base):
         username = self.telegram_username
         return username if username else f'{self.first_name} {self.last_name}'
 
+    @classmethod
+    def get_user_by_telegram_user_id(cls, telegram_user_id):
+        return session.query(cls).filter(cls.telegram_user_id == telegram_user_id).first()
+
 
 class CategoryEarning(Base):
     __tablename__ = 'category_earning'
