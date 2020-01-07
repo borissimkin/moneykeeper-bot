@@ -50,6 +50,13 @@ def exit_dialog(f):
     return wrapped
 
 
+def clear_user_data(f):
+    def wrapped(update, context, *args, **kwargs):
+        context.user_data.clear()
+        return f(update, context, *args, **kwargs)
+    return wrapped
+
+
 def add_button_cancel(buttons):
     buttons.append([text_button_cancel])
     return buttons
@@ -59,3 +66,7 @@ def add_buttons_exit_and_back(buttons):
     buttons.append([text_button_back, text_button_exit])
     return buttons
 
+
+def add_button_exit(buttons):
+    buttons.append([text_button_exit])
+    return buttons
