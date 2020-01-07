@@ -53,7 +53,7 @@ class CategoryEarning(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
 
     def __repr__(self):
-        return f"<CategoryEarning('{self.id}', '{self.category}')>"
+        return f"<CategoryEarning('{self.id}', '{self.category}', '{self.user_id}')>"
 
     def __eq__(self, other):
         return isinstance(other, CategoryEarning) and other.id == self.id
@@ -97,7 +97,7 @@ class CategoryConsumption(Base):
     category = Column(String, nullable=False)
 
     def __repr__(self):
-        return f"<CategoryConsumption('{self.id}', '{self.category}')>"
+        return f"<CategoryConsumption('{self.id}', '{self.category}', '{self.user_id}')>"
 
     def __eq__(self, other):
         return isinstance(other, CategoryConsumption) and other.id == self.id
