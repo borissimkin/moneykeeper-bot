@@ -6,7 +6,8 @@ from sqlalchemy.orm import sessionmaker
 
 from bot.models import User, CategoryEarning, Earning, CategoryConsumption, Consumption, Base
 from tests.utils_models import add_example_user, example_user, add_example_category_earning, example_category_earning, \
-    add_example_earning, example_earning, add_example_category_consumption, example_category_consumption, add_example_consumption, \
+    add_example_earning, example_earning, add_example_category_consumption, example_category_consumption, \
+    add_example_consumption, \
     example_consumption
 
 engine = create_engine('sqlite:///:memory:')

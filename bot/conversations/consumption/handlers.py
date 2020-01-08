@@ -106,7 +106,8 @@ def send_message_to_choose_category(telegram_user_id, amount_money):
 @exit_dialog
 def handler_confirm_add_consumption(update: Update, context: CallbackContext):
     if update.message.text == text_button_confirm:
-        add_consumption_in_db(update.message.from_user.id,
+        add_consumption_in_db(session,
+                              update.message.from_user.id,
                               context.user_data['amount_money_consumption'],
                               context.user_data['category_consumption'])
         bot.send_message(chat_id=update.message.from_user.id,
@@ -115,9 +116,10 @@ def handler_confirm_add_consumption(update: Update, context: CallbackContext):
         return ConversationHandler.END
 
 
-def add_consumption_in_db(telegram_user_id, amount_money, category_text):
+def add_consumption_in_db(session, telegram_user_id, amount_money, category_text):
     user = session.query(User).filter(User.telegram_user_id == telegram_user_id).first()
-    category = session.query(CategoryConsumption).filter(CategoryConsumption.category == category_text).first()
+    category = session.query(CategoryConsumption).filter(CategoryConsumption.category == category_text,
+                                                         CategoryConsumption.user_id == user.id).first()
     session.add(Consumption(user_id=user.id,
                             category_id=category.id,
                             amount_money=amount_money))
