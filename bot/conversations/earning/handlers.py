@@ -49,7 +49,7 @@ def exit_point(update: Update, context: CallbackContext):
 def handler_to_choose_category(update: Update, context: CallbackContext):
     text = update.message.text
     user = session.query(User).filter(User.telegram_user_id == update.message.from_user.id).first()
-    categories = CategoryEarning.get_all_categories_by_text(user.id)
+    categories = CategoryEarning.get_all_categories_by_text(session, user.id)
     if text in categories:
         context.user_data['category_earning'] = text
         return to_confirm_add_earning(update, context)
@@ -75,7 +75,7 @@ def to_choose_category(update: Update, context: CallbackContext):
 def send_message_to_choose_category(telegram_user_id, amount_money):
     user = session.query(User).filter(User.telegram_user_id == telegram_user_id).first()
     buttons = make_buttons_for_choose_category(count_buttons_per_row=config['buttons_per_row'],
-                                               categories=CategoryEarning.get_all_categories(user.id))
+                                               categories=CategoryEarning.get_all_categories(session, user.id))
     buttons = add_buttons_exit_and_back(buttons)
     keyboard = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
     bot.send_message(chat_id=telegram_user_id,

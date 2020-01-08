@@ -34,7 +34,7 @@ class TestUser(unittest.TestCase):
         add_example_user(session)
         now = datetime.datetime(2021, 1, 10, 12, 55, 12)
         user = session.query(User).get(1)
-        user.update_activity(now)
+        user.update_activity(session, now)
         self.assertEqual(user.last_activity, now)
 
     def test_repr(self):

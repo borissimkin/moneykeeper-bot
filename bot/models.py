@@ -31,11 +31,11 @@ class User(Base):
     def __eq__(self, other):
         return isinstance(other, User) and other.id == self.id
 
-    def update_activity(self, now):
+    def update_activity(self, session, now):
         self.last_activity = now
         session.commit()
 
-    def update_username(self, username):
+    def update_username(self, session, username):
         if username != self.telegram_username:
             self.telegram_username = username
             session.commit()
@@ -45,7 +45,7 @@ class User(Base):
         return username if username else f'{self.first_name} {self.last_name}'
 
     @classmethod
-    def get_user_by_telegram_user_id(cls, telegram_user_id):
+    def get_user_by_telegram_user_id(cls, session, telegram_user_id):
         return session.query(cls).filter(cls.telegram_user_id == telegram_user_id).first()
 
 
@@ -63,17 +63,17 @@ class CategoryEarning(Base):
         return isinstance(other, CategoryEarning) and other.id == self.id
 
     @classmethod
-    def create_default_categories(cls, user_id):
-        session.add(CategoryEarning(user_id=user_id, category='Работа'))
+    def create_default_categories(cls, session, user_id):
+        session.add(CategoryEarning(user_id=user_id, category='Зарплата🤑'))
         session.commit()
 
     @classmethod
-    def get_all_categories(cls, user_id):
+    def get_all_categories(cls, session, user_id):
         return session.query(cls).filter(cls.user_id == user_id).all()
 
     @classmethod
-    def get_all_categories_by_text(cls, user_id):
-        categories = cls.get_all_categories(user_id)
+    def get_all_categories_by_text(cls, session, user_id):
+        categories = cls.get_all_categories(session, user_id)
         return [c.category for c in categories]
 
 
@@ -107,16 +107,16 @@ class CategoryConsumption(Base):
         return isinstance(other, CategoryConsumption) and other.id == self.id
 
     @classmethod
-    def get_all_categories(cls, user_id):
+    def get_all_categories(cls, session, user_id):
         return session.query(cls).filter(cls.user_id == user_id).all()
 
     @classmethod
-    def get_all_categories_by_text(cls, user_id):
-        categories = cls.get_all_categories(user_id)
+    def get_all_categories_by_text(cls, session, user_id):
+        categories = cls.get_all_categories(session, user_id)
         return [c.category for c in categories]
 
     @classmethod
-    def create_default_categories(cls, user_id):
+    def create_default_categories(cls, session, user_id):
         session.add_all([CategoryConsumption(user_id=user_id, category='Продукты🍞'),
                          CategoryConsumption(user_id=user_id, category='Транспорт🚎'),
                          CategoryConsumption(user_id=user_id, category='Кафе🍕'),
