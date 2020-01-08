@@ -76,6 +76,12 @@ class CategoryEarning(Base):
         categories = cls.get_all_categories(session, user_id)
         return [c.category for c in categories]
 
+    @classmethod
+    def add_category(cls, session, user_id, category: str):
+        session.add(cls(category=category,
+                        user_id=user_id))
+        session.commit()
+
 
 class Earning(Base):
     __tablename__ = 'earning'
@@ -114,6 +120,12 @@ class CategoryConsumption(Base):
     def get_all_categories_by_text(cls, session, user_id):
         categories = cls.get_all_categories(session, user_id)
         return [c.category for c in categories]
+
+    @classmethod
+    def add_category(cls, session, user_id, category: str):
+        session.add(cls(category=category,
+                        user_id=user_id))
+        session.commit()
 
     @classmethod
     def create_default_categories(cls, session, user_id):

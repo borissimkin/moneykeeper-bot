@@ -2,7 +2,7 @@ import datetime
 
 import sqlalchemy
 
-from bot.buttons import text_button_cancel, text_button_back, text_button_exit
+from bot.buttons import Buttons
 from bot.exceptions import BackIsNotDefined, ExitIsNotDefined
 from bot.models import session, User
 
@@ -28,7 +28,7 @@ def update_username(func):
 
 def back(f):
     def wrapped(update, context, *args, **kwargs):
-        if update.message.text == text_button_back:
+        if update.message.text == Buttons.back:
             try:
                 back_func = context.user_data['back_func']
             except BackIsNotDefined as e:
@@ -40,7 +40,7 @@ def back(f):
 
 def exit_dialog(f):
     def wrapped(update, context, *args, **kwargs):
-        if update.message.text == text_button_exit:
+        if update.message.text == Buttons.exit:
             try:
                 exit_func = context.user_data['exit_func']
             except ExitIsNotDefined as e:
@@ -58,15 +58,15 @@ def clear_user_data(f):
 
 
 def add_button_cancel(buttons):
-    buttons.append([text_button_cancel])
+    buttons.append([Buttons.cancel])
     return buttons
 
 
 def add_buttons_exit_and_back(buttons):
-    buttons.append([text_button_back, text_button_exit])
+    buttons.append([Buttons.back, Buttons.exit])
     return buttons
 
 
 def add_button_exit(buttons):
-    buttons.append([text_button_exit])
+    buttons.append([Buttons.exit])
     return buttons

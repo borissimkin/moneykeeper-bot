@@ -4,7 +4,7 @@ from telegram.ext import ConversationHandler, MessageHandler, Filters, CallbackC
 
 from bot import bot, config
 from bot.keyboards import keyboard_confirm, keyboard_exit, make_buttons_for_choose_category
-from bot.buttons import text_button_cancel, text_button_confirm
+from bot.buttons import Buttons
 from bot.conversations.consumption.messages import text_to_choose_category, text_exit_point, text_timeout, \
      text_success_add_consumption, text_error_enter_amount_money, text_to_write_money
 from bot.messages import text_confirm_add_transaction
@@ -105,7 +105,7 @@ def send_message_to_choose_category(telegram_user_id, amount_money):
 @back
 @exit_dialog
 def handler_confirm_add_consumption(update: Update, context: CallbackContext):
-    if update.message.text == text_button_confirm:
+    if update.message.text == Buttons.confirm:
         add_consumption_in_db(session,
                               update.message.from_user.id,
                               context.user_data['amount_money_consumption'],

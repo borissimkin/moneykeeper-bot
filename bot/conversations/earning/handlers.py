@@ -3,7 +3,7 @@ from telegram import Update, ReplyKeyboardRemove, ReplyKeyboardMarkup
 from telegram.ext import MessageHandler, ConversationHandler, Filters, CallbackContext, CommandHandler
 
 from bot import config, bot
-from bot.buttons import text_button_confirm
+from bot.buttons import Buttons
 from bot.conversations.earning.messages import text_timeout, text_exit_point, text_error_enter_amount_money, \
     text_to_choose_category, text_success_add_earning, text_to_write_money
 from bot.conversations.earning.states import States
@@ -104,7 +104,7 @@ def send_message_error_enter_amount_money(telegram_user_id):
 @exit_dialog
 @back
 def handler_confirm_add_earning(update: Update, context: CallbackContext):
-    if update.message.text == text_button_confirm:
+    if update.message.text == Buttons.confirm:
         add_earning_in_db(session,
                           update.message.from_user.id,
                           context.user_data['amount_money_earning'],

@@ -1,11 +1,11 @@
 from telegram import ReplyKeyboardMarkup
 
-from bot.buttons import text_button_confirm, text_button_back, text_button_exit
+from bot.buttons import Buttons
 
-keyboard_confirm = ReplyKeyboardMarkup([[text_button_confirm],
-                                        [text_button_back, text_button_exit]], resize_keyboard=True)
+keyboard_confirm = ReplyKeyboardMarkup([[Buttons.confirm],
+                                        [Buttons.back, Buttons.exit]], resize_keyboard=True)
 
-keyboard_exit = ReplyKeyboardMarkup([[text_button_exit]], resize_keyboard=True)
+keyboard_exit = ReplyKeyboardMarkup([[Buttons.exit]], resize_keyboard=True)
 
 
 def make_buttons_for_choose_category(count_buttons_per_row, categories):
