@@ -12,13 +12,13 @@ class StartHandler:
 
     @classmethod
     def start(cls, update: Update, context: CallbackContext):
-        if not cls.check_user_in_db(update.message.from_user.id):
-            cls.add_user_in_db(update)
+        if not cls.check_user_in_db(update.message.from_user.id, session):
+            cls.add_user_in_db(update, session)
             cls.create_default_categories_for_earning_and_consumption(update.message.from_user.id)
             cls.send_welcome_text(update.message.from_user.id)
 
     @staticmethod
-    def add_user_in_db(update):
+    def add_user_in_db(update, session):
         user = update.message.from_user
         username = getattr(user, 'username', sqlalchemy.null())
         session.add(User(telegram_username=username, telegram_user_id=user.id,
@@ -28,11 +28,11 @@ class StartHandler:
     @staticmethod
     def create_default_categories_for_earning_and_consumption(telegram_user_id):
         user = session.query(User).filter(User.telegram_user_id == telegram_user_id).first()
-        CategoryEarning.create_default_categories(user.id)
-        CategoryConsumption.create_default_categories(user.id)
+        CategoryEarning.create_default_categories(session, user.id)
+        CategoryConsumption.create_default_categories(session, user.id)
 
     @staticmethod
-    def check_user_in_db(user_id):
+    def check_user_in_db(user_id, session):
         user = session.query(User.telegram_user_id == user_id).first()
         return True if user else False
 

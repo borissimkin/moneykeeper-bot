@@ -67,6 +67,13 @@ class TestCategoryEarning(unittest.TestCase):
         category_earning = session.query(CategoryEarning).get(1)
         self.assertEqual(repr(category_earning), expected)
 
+    def test_delete_category(self):
+        add_example_category_earning(session)
+        category = session.query(CategoryEarning).get(1)
+        category.delete_category(session)
+        answer = session.query(CategoryEarning).get(1)
+        self.assertEqual(answer, None)
+
 
 class TestEarning(unittest.TestCase):
 
@@ -88,6 +95,14 @@ class TestEarning(unittest.TestCase):
             f"'{example_earning['category_id']}', '{example_earning['amount_money']}')>"
         earning = session.query(Earning).get(1)
         self.assertEqual(repr(earning), expected)
+
+    def test_delete_list_earning(self):
+        for _ in range(2):
+            add_example_earning(session)
+        earnings = session.query(Earning).all()
+        Earning.delete_list_earning(session, earnings)
+        answer = session.query(Earning).all()
+        self.assertEqual(answer, [])
 
 
 class TestCategoryConsumption(unittest.TestCase):
@@ -111,6 +126,13 @@ class TestCategoryConsumption(unittest.TestCase):
         category_consumption = session.query(CategoryConsumption).get(example_category_consumption['id'])
         self.assertEqual(repr(category_consumption), expected)
 
+    def test_delete_category(self):
+        add_example_category_consumption(session)
+        category = session.query(CategoryConsumption).get(1)
+        category.delete_category(session)
+        answer = session.query(CategoryConsumption).get(1)
+        self.assertEqual(answer, None)
+
 
 class TestConsumption(unittest.TestCase):
     def setUp(self):
@@ -132,3 +154,11 @@ class TestConsumption(unittest.TestCase):
             f"'{example_consumption['amount_money']}')>"
         consumption = session.query(Consumption).get(1)
         self.assertEqual(repr(consumption), expected)
+
+    def test_delete_list_consumption(self):
+        for _ in range(2):
+            add_example_consumption(session)
+        consumptions = session.query(Consumption).all()
+        Consumption.delete_list_consumption(session, consumptions)
+        answer = session.query(Consumption).all()
+        self.assertEqual(answer, [])

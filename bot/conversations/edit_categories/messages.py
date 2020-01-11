@@ -17,6 +17,16 @@ def text_add_category():
     return 'Введите название новой категории.'
 
 
+def text_warning_delete_category():
+    return '<b>ВНИМАНИЕ!</b> Удаляя категорию, пропадут все записи с данной категорией.'
+
+
+def text_delete_category(session, telegram_user_id, category_manager: CategoryManager):
+    text_categories = category_manager.make_text_list_categories(session, telegram_user_id)
+    return f'Выберите категорию для удаления.\n' \
+           f'\n{text_categories}'
+
+
 class TextMenuManageCategories:
     @staticmethod
     def classic_text_manage_categories():
@@ -31,8 +41,7 @@ class TextMenuManageCategories:
     def text_instruction_not_empty_categories():
         return 'Чтобы добавить категорию нажмите <b>Добавить</b>.\n' \
                'Изменить одну из существующих категорий - <b>Изменить</b>.\n' \
-               'Удалить категорию - <b>Удалить</b>.\n' \
-               '<b>ВНИМАНИЕ!</b> Удаляя категорию, пропадут записи с данной категорией.'
+               'Удалить категорию - <b>Удалить</b>.\n'
 
     @classmethod
     def make_text_menu_manage_categories(cls, session, telegram_user_id, category_manager: CategoryManager):

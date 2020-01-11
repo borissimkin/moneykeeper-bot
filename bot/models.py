@@ -82,6 +82,12 @@ class CategoryEarning(Base):
                         user_id=user_id))
         session.commit()
 
+    def delete_category(self, session):
+        earning_by_category = session.query(Earning).filter(self.id == Earning.category_id).all()
+        Earning.delete_list_earning(session, earning_by_category)
+        session.delete(self)
+        session.commit()
+
 
 class Earning(Base):
     __tablename__ = 'earning'
@@ -97,6 +103,12 @@ class Earning(Base):
 
     def __eq__(self, other):
         return isinstance(other, Earning) and other.id == self.id
+
+    @classmethod
+    def delete_list_earning(cls, session, earnings: list):
+        for e in earnings:
+            session.delete(e)
+        session.commit()
 
 
 class CategoryConsumption(Base):
@@ -139,6 +151,12 @@ class CategoryConsumption(Base):
                          CategoryConsumption(user_id=user_id, category='Здоровье💊')])
         session.commit()
 
+    def delete_category(self, session):
+        consumptions_by_category = session.query(Consumption).filter(self.id == Consumption.category_id).all()
+        Consumption.delete_list_consumption(session, consumptions_by_category)
+        session.delete(self)
+        session.commit()
+
 
 class Consumption(Base):
     __tablename__ = 'consumption'
@@ -154,6 +172,12 @@ class Consumption(Base):
 
     def __eq__(self, other):
         return isinstance(other, Consumption) and other.id == self.id
+
+    @classmethod
+    def delete_list_consumption(cls, session, consumptions: list):
+        for c in consumptions:
+            session.delete(c)
+        session.commit()
 
 
 if __name__ == '__main__':

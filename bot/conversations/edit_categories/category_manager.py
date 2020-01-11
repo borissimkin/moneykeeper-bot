@@ -30,25 +30,21 @@ class CategoryManager(abc.ABC):
         pass
 
     @classmethod
-    def delete_category(cls, update: Update, context: CallbackContext):
+    def get_all_categories(cls, session, telegram_user_id):
         pass
 
     @classmethod
-    def confirm_delete_category(cls, update: Update, context: CallbackContext):
+    def get_all_categories_by_text(cls, session, telegram_user_id):
         pass
 
     @classmethod
-    def confirm_set_default_category(cls, update: Update, context: CallbackContext):
+    def text_confirm_delete_category(cls, category: str):
         pass
 
     @classmethod
-    def edit_category(cls, update: Update, context: CallbackContext):
+    def delete_category_in_db(cls, session, category: str, telegram_user_id):
         pass
 
     @classmethod
-    def write_new_category(cls, update: Update, context: CallbackContext):
-        pass
-
-    @classmethod
-    def confirm_edit_category(cls, update: Update, context: CallbackContext):
+    def text_success_delete(cls, category: str):
         pass

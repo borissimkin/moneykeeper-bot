@@ -76,3 +76,55 @@ class TestAddCategoryInDb(unittest.TestCase):
         ConsumptionCategoryManager.add_category_in_db(session, new_category, example_user['telegram_user_id'])
         answer = session.query(CategoryConsumption).get(1)
         self.assertEqual(answer, expected)
+
+
+class TestGetAllCategories(unittest.TestCase):
+    def setUp(self):
+        Base.metadata.create_all(engine)
+
+    def tearDown(self):
+        Base.metadata.drop_all(engine)
+
+    def test_get_all_categories(self):
+        add_example_user(session)
+        add_example_category_consumption(session)
+        expected = [CategoryConsumption(id=1,
+                                        user_id=example_user['id'],
+                                        category=example_category_consumption['category'])]
+        answer = session.query(CategoryConsumption).all()
+        self.assertEqual(answer, expected)
+
+
+class TestGetAllCategoriesByText(unittest.TestCase):
+    def setUp(self):
+        Base.metadata.create_all(engine)
+
+    def tearDown(self):
+        Base.metadata.drop_all(engine)
+
+    def test_get_all_categories_by_text(self):
+        add_example_user(session)
+        add_example_category_consumption(session)
+        expected = [example_category_consumption['category']]
+        answer = ConsumptionCategoryManager.get_all_categories_by_text(session,
+                                                                       example_user['telegram_user_id'])
+        self.assertEqual(answer, expected)
+
+
+class TestDeleteCategoryInDb(unittest.TestCase):
+    def setUp(self):
+        Base.metadata.create_all(engine)
+
+    def tearDown(self):
+        Base.metadata.drop_all(engine)
+
+    def test_delete_category_in_db(self):
+        add_example_user(session)
+        add_example_category_consumption(session)
+
+        ConsumptionCategoryManager.delete_category_in_db(session, example_category_consumption['category'],
+                                                         example_user['telegram_user_id'])
+        expected = None
+        answer = session.query(CategoryConsumption).get(1)
+        self.assertEqual(answer, expected)
+

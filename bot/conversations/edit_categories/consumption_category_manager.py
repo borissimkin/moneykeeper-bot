@@ -34,3 +34,29 @@ class ConsumptionCategoryManager(CategoryManager):
     @staticmethod
     def text_success_add_category(new_category: str):
         return f'Новая категория расходов - <b>{new_category}</b> успешно добавлена!'
+
+    @classmethod
+    def get_all_categories(cls, session, telegram_user_id):
+        user = session.query(User).filter(User.telegram_user_id == telegram_user_id).first()
+        return CategoryConsumption.get_all_categories(session, user.id)
+
+    @classmethod
+    def get_all_categories_by_text(cls, session, telegram_user_id):
+        user = session.query(User).filter(User.telegram_user_id == telegram_user_id).first()
+        return CategoryConsumption.get_all_categories_by_text(session, user.id)
+
+    @classmethod
+    def text_confirm_delete_category(cls, category: str):
+        return f'Вы уверены что хотите удалить <b>{category}</b> в категориях <b>расходов</b>?'
+
+    @classmethod
+    def delete_category_in_db(cls, session, category: str, telegram_user_id):
+        user = session.query(User).filter(User.telegram_user_id == telegram_user_id).first()
+        category = session.query(CategoryConsumption).filter(CategoryConsumption.category == category,
+                                                             CategoryConsumption.user_id == user.id).first()
+        category.delete_category(session)
+
+    @classmethod
+    def text_success_delete(cls, category: str):
+        return f'Категория <b>{category}</b> в <b>расходах</b> успешно удалена!'
+
