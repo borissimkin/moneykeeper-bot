@@ -1,8 +1,5 @@
 import abc
 
-from telegram import Update
-from telegram.ext import CallbackContext
-
 
 class CategoryManager(abc.ABC):
     @staticmethod
@@ -26,10 +23,6 @@ class CategoryManager(abc.ABC):
         pass
 
     @classmethod
-    def confirm_add_category(cls, update: Update, context: CallbackContext):
-        pass
-
-    @classmethod
     def get_all_categories(cls, session, telegram_user_id):
         pass
 
@@ -47,4 +40,12 @@ class CategoryManager(abc.ABC):
 
     @classmethod
     def text_success_delete(cls, category: str):
+        pass
+
+    @classmethod
+    def edit_category_in_db(cls, session, telegram_user_id, old_category: str, new_category: str):
+        pass
+
+    @classmethod
+    def text_success_edit_category(cls, old_category: str, new_category: str):
         pass

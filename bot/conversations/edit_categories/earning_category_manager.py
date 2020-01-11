@@ -56,3 +56,14 @@ class EarningCategoryManager(CategoryManager):
     @classmethod
     def text_success_delete(cls, category: str):
         return f'Категория <b>{category}</b> в <b>доходах</b> успешно удалена!'
+
+    @classmethod
+    def edit_category_in_db(cls, session, telegram_user_id, old_category, new_category):
+        user = session.query(User).filter(User.telegram_user_id == telegram_user_id).first()
+        category = session.query(CategoryEarning).filter(CategoryEarning.category == old_category,
+                                                         CategoryEarning.user_id == user.id).first()
+        category.update_category(session, new_category)
+
+    @classmethod
+    def text_success_edit_category(cls, old_category: str, new_category: str):
+        return f'Категория <b>{old_category}</b> в <b>доходах</b> изменена на <b>{new_category}</b>'

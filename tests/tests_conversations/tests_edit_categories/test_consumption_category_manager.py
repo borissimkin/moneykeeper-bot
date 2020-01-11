@@ -128,3 +128,22 @@ class TestDeleteCategoryInDb(unittest.TestCase):
         answer = session.query(CategoryConsumption).get(1)
         self.assertEqual(answer, expected)
 
+
+class TestEditCategoryInDb(unittest.TestCase):
+    def setUp(self):
+        Base.metadata.create_all(engine)
+
+    def tearDown(self):
+        Base.metadata.drop_all(engine)
+
+    def test_edit_category_in_db(self):
+        add_example_user(session)
+        add_example_category_consumption(session)
+        new_category = 'расход какой то'
+        ConsumptionCategoryManager.edit_category_in_db(session, example_user['telegram_user_id'],
+                                                       example_category_consumption['category'],
+                                                       new_category)
+        answer = session.query(CategoryConsumption).get(1)
+        self.assertEqual(answer.category, new_category)
+
+

@@ -74,6 +74,14 @@ class TestCategoryEarning(unittest.TestCase):
         answer = session.query(CategoryEarning).get(1)
         self.assertEqual(answer, None)
 
+    def test_update_category(self):
+        new_category = 'Подработка'
+        add_example_category_earning(session)
+        category = session.query(CategoryEarning).get(1)
+        category.update_category(session, new_category)
+        category = session.query(CategoryEarning).get(1)
+        self.assertEqual(category.category, new_category)
+
 
 class TestEarning(unittest.TestCase):
 
@@ -132,6 +140,14 @@ class TestCategoryConsumption(unittest.TestCase):
         category.delete_category(session)
         answer = session.query(CategoryConsumption).get(1)
         self.assertEqual(answer, None)
+
+    def test_update_category(self):
+        new_category = 'Шаурма'
+        add_example_category_consumption(session)
+        category = session.query(CategoryConsumption).get(1)
+        category.update_category(session, new_category)
+        category = session.query(CategoryConsumption).get(1)
+        self.assertEqual(category.category, new_category)
 
 
 class TestConsumption(unittest.TestCase):

@@ -88,6 +88,10 @@ class CategoryEarning(Base):
         session.delete(self)
         session.commit()
 
+    def update_category(self, session, new_category):
+        self.category = new_category
+        session.commit()
+
 
 class Earning(Base):
     __tablename__ = 'earning'
@@ -155,6 +159,10 @@ class CategoryConsumption(Base):
         consumptions_by_category = session.query(Consumption).filter(self.id == Consumption.category_id).all()
         Consumption.delete_list_consumption(session, consumptions_by_category)
         session.delete(self)
+        session.commit()
+
+    def update_category(self, session, new_category):
+        self.category = new_category
         session.commit()
 
 

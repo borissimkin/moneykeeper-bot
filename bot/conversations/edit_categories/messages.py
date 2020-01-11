@@ -21,6 +21,18 @@ def text_warning_delete_category():
     return '<b>ВНИМАНИЕ!</b> Удаляя категорию, пропадут все записи с данной категорией.'
 
 
+def text_edit_category():
+    return 'Выберите категорию, которую хотите изменить.'
+
+
+def text_write_edit_category(category: str):
+    return f'Введите новую категеорию, вместо <b>{category}</b>'
+
+
+def text_confirm_edit_category(old_category: str, new_category: str):
+    return f'Вы уверены, что хотите изменить <b>{old_category}</b> на <b>{new_category}</b>'
+
+
 def text_delete_category(session, telegram_user_id, category_manager: CategoryManager):
     text_categories = category_manager.make_text_list_categories(session, telegram_user_id)
     return f'Выберите категорию для удаления.\n' \

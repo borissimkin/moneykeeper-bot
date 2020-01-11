@@ -13,7 +13,6 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 
-
 class TestStart(unittest.TestCase):
     def setUp(self):
         Base.metadata.create_all(engine)
