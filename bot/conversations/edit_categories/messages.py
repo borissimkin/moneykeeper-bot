@@ -40,7 +40,8 @@ class TextMenuManageCategories:
             text_categories = category_manager.make_text_list_categories(session, telegram_user_id)
             return f'{cls.classic_text_manage_categories()}\n' \
                 f'{cls.text_instruction_not_empty_categories()}\n' \
-                f'{text_categories}'
+                f'\nТекущие категории:\n' \
+                f'\n{text_categories}'
         else:
             return f'{cls.classic_text_manage_categories()}\n' \
                 f'{cls.text_instruction_empty_categories()}'

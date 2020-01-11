@@ -7,9 +7,11 @@ from bot.utils import add_button_exit, add_buttons_exit_and_back
 
 def make_keyboard_menu_manage_categories(session, telegram_user_id, category_manager: CategoryManager):
     if category_manager.check_any_categories(session, telegram_user_id):
-        keyboard = ReplyKeyboardMarkup(add_buttons_exit_and_back([[Buttons.add, Buttons.edit, Buttons.delete]]))
+        keyboard = ReplyKeyboardMarkup(add_buttons_exit_and_back([[Buttons.add, Buttons.edit, Buttons.delete]]),
+                                       resize_keyboard=True)
     else:
-        keyboard = ReplyKeyboardMarkup(add_buttons_exit_and_back([[Buttons.add]]))
+        keyboard = ReplyKeyboardMarkup(add_buttons_exit_and_back([[Buttons.add]]),
+                                       resize_keyboard=True)
     return keyboard
 
 

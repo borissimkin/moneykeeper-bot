@@ -82,7 +82,8 @@ def to_add_category(update: Update, context: CallbackContext):
     context.user_data['back_func'] = to_menu_manage_categories
     bot.send_message(chat_id=update.message.from_user.id,
                      text=text_add_category(),
-                     reply_markup=ReplyKeyboardMarkup(add_buttons_exit_and_back([])))
+                     reply_markup=ReplyKeyboardMarkup(add_buttons_exit_and_back([]),
+                                                      resize_keyboard=True))
     return States.TO_ADD_CATEGORY
 
 
@@ -115,7 +116,7 @@ def handler_confirm_add_category(update: Update, context: CallbackContext):
         bot.send_message(chat_id=update.message.from_user.id,
                          text=context.user_data['category_manager'].text_success_add_category(new_category),
                          parse_mode=telegram.ParseMode.HTML,
-                         reply_markup=ReplyKeyboardRemove)
+                         reply_markup=ReplyKeyboardRemove())
         return entry_point(update, context)
 
 
@@ -143,28 +144,28 @@ edit_categories = ConversationHandler(
                                                         handler_confirm_add_category,
                                                         pass_user_data=True)],
 
-        States.TO_DELETE_CATEGORY: [MessageHandler(Filters.text,
-                                                   handler_delete_category,
-                                                   pass_user_data=True)],
-
-        States.TO_CONFIRM_DELETE_CATEGORY: [MessageHandler(Filters.text,
-                                                           handler_confirm_delete_category,
-                                                           pass_user_data=True)],
-
-        States.TO_CONFIRM_SET_DEFAULT_CATEGORIES: [MessageHandler(Filters.text,
-                                                   handler_confirm_set_default_categories,
-                                                   pass_user_data=True)],
-
-        States.TO_EDIT_CATEGORY: [MessageHandler(Filters.text,
-                                                 handler_edit_category,
-                                                 pass_user_data=True)],
-        States.TO_WRITE_NEW_CATEGORY: [MessageHandler(Filters.text,
-                                                      handler_write_new_category,
-                                                      pass_user_data=True)],
-
-        States.TO_CONFIRM_EDIT_CATEGORY: [MessageHandler(Filters.text,
-                                                         handler_confirm_edit_category,
-                                                         pass_user_data=True)],
+        # States.TO_DELETE_CATEGORY: [MessageHandler(Filters.text,
+        #                                            handler_delete_category,
+        #                                            pass_user_data=True)],
+        #
+        # States.TO_CONFIRM_DELETE_CATEGORY: [MessageHandler(Filters.text,
+        #                                                    handler_confirm_delete_category,
+        #                                                    pass_user_data=True)],
+        #
+        # States.TO_CONFIRM_SET_DEFAULT_CATEGORIES: [MessageHandler(Filters.text,
+        #                                            handler_confirm_set_default_categories,
+        #                                            pass_user_data=True)],
+        #
+        # States.TO_EDIT_CATEGORY: [MessageHandler(Filters.text,
+        #                                          handler_edit_category,
+        #                                          pass_user_data=True)],
+        # States.TO_WRITE_NEW_CATEGORY: [MessageHandler(Filters.text,
+        #                                               handler_write_new_category,
+        #                                               pass_user_data=True)],
+        #
+        # States.TO_CONFIRM_EDIT_CATEGORY: [MessageHandler(Filters.text,
+        #                                                  handler_confirm_edit_category,
+        #                                                  pass_user_data=True)],
 
 
     },
