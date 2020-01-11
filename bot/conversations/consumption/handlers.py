@@ -4,7 +4,7 @@ from telegram.ext import ConversationHandler, MessageHandler, Filters, CallbackC
 
 from bot import bot, config
 from bot.keyboards import keyboard_confirm, keyboard_exit, make_buttons_for_choose_category
-from bot.buttons import text_button_cancel, text_button_confirm
+from bot.buttons import Buttons
 from bot.conversations.consumption.messages import text_to_choose_category, text_exit_point, text_timeout, \
      text_success_add_consumption, text_error_enter_amount_money, text_to_write_money
 from bot.messages import text_confirm_add_transaction
@@ -41,7 +41,7 @@ def handler_timeout(update: Update, context: CallbackContext):
 def handler_to_choose_category(update: Update, context: CallbackContext):
     text = update.message.text
     user = session.query(User).filter(User.telegram_user_id == update.message.from_user.id).first()
-    right_answers = CategoryConsumption.get_all_categories_by_text(user.id)
+    right_answers = CategoryConsumption.get_all_categories_by_text(session, user.id)
     if text in right_answers:
         context.user_data['category_consumption'] = text
         return to_confirm_add_consumption(update, context)
@@ -93,7 +93,7 @@ def send_message_error_enter_amount_money(telegram_user_id):
 def send_message_to_choose_category(telegram_user_id, amount_money):
     user = session.query(User).filter(User.telegram_user_id == telegram_user_id).first()
     buttons = make_buttons_for_choose_category(count_buttons_per_row=config['buttons_per_row'],
-                                               categories=CategoryConsumption.get_all_categories(user.id))
+                                               categories=CategoryConsumption.get_all_categories(session, user.id))
     buttons = add_buttons_exit_and_back(buttons)
     keyboard = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
     bot.send_message(chat_id=telegram_user_id,
@@ -105,8 +105,9 @@ def send_message_to_choose_category(telegram_user_id, amount_money):
 @back
 @exit_dialog
 def handler_confirm_add_consumption(update: Update, context: CallbackContext):
-    if update.message.text == text_button_confirm:
-        add_consumption_in_db(update.message.from_user.id,
+    if update.message.text == Buttons.confirm:
+        add_consumption_in_db(session,
+                              update.message.from_user.id,
                               context.user_data['amount_money_consumption'],
                               context.user_data['category_consumption'])
         bot.send_message(chat_id=update.message.from_user.id,
@@ -115,9 +116,10 @@ def handler_confirm_add_consumption(update: Update, context: CallbackContext):
         return ConversationHandler.END
 
 
-def add_consumption_in_db(telegram_user_id, amount_money, category_text):
+def add_consumption_in_db(session, telegram_user_id, amount_money, category_text):
     user = session.query(User).filter(User.telegram_user_id == telegram_user_id).first()
-    category = session.query(CategoryConsumption).filter(CategoryConsumption.category == category_text).first()
+    category = session.query(CategoryConsumption).filter(CategoryConsumption.category == category_text,
+                                                         CategoryConsumption.user_id == user.id).first()
     session.add(Consumption(user_id=user.id,
                             category_id=category.id,
                             amount_money=amount_money))

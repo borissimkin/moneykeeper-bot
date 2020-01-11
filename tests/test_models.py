@@ -5,6 +5,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from bot.models import User, CategoryEarning, Earning, CategoryConsumption, Consumption, Base
+from tests.utils_models import add_example_user, example_user, add_example_category_earning, example_category_earning, \
+    add_example_earning, example_earning, add_example_category_consumption, example_category_consumption, \
+    add_example_consumption, \
+    example_consumption
 
 engine = create_engine('sqlite:///:memory:')
 
@@ -13,26 +17,6 @@ session = Session()
 
 
 class TestUser(unittest.TestCase):
-    now = datetime.datetime(2020, 1, 10, 12, 30, 00)
-    user = {'id': 1,
-            'telegram_username': 'username',
-            'telegram_user_id': 41231323,
-            'first_name': 'Boris',
-            'last_name': 'last_name',
-            'last_activity': now,
-            'date_registration': now,
-            }
-
-    @classmethod
-    def add_user(cls):
-        session.add(User(telegram_username=cls.user['telegram_username'],
-                         telegram_user_id=cls.user['telegram_user_id'],
-                         first_name=cls.user['first_name'],
-                         last_name=cls.user['last_name'],
-                         last_activity=cls.user['last_activity'],
-                         date_registration=cls.user['date_registration']))
-        session.commit()
-
     def setUp(self):
         Base.metadata.create_all(engine)
 
@@ -40,37 +24,29 @@ class TestUser(unittest.TestCase):
         Base.metadata.drop_all(engine)
 
     def test_query_user(self):
-        self.add_user()
+        add_example_user(session)
         expected = [User(id=1, telegram_username='username', telegram_user_id=123,
                          first_name='boris', last_name='last name')]
         result = session.query(User).all()
         self.assertEqual(result, expected)
 
     def test_update_activity(self):
-        self.add_user()
+        add_example_user(session)
         now = datetime.datetime(2021, 1, 10, 12, 55, 12)
         user = session.query(User).get(1)
-        user.update_activity(now)
+        user.update_activity(session, now)
         self.assertEqual(user.last_activity, now)
 
     def test_repr(self):
-        self.add_user()
+        add_example_user(session)
         user = session.query(User).get(1)
-        expected = f"<User ('{self.user['id']}', '{self.user['telegram_username']}', " \
-            f"'{self.user['telegram_user_id']}', '{self.user['first_name']}', " \
-            f"'{self.user['last_name']}', '{self.user['last_activity']}', '{self.user['date_registration']}')>"
+        expected = f"<User ('{example_user['id']}', '{example_user['telegram_username']}', " \
+            f"'{example_user['telegram_user_id']}', '{example_user['first_name']}', " \
+            f"'{example_user['last_name']}', '{example_user['last_activity']}', '{example_user['date_registration']}')>"
         self.assertEqual(repr(user), expected)
 
 
 class TestCategoryEarning(unittest.TestCase):
-    category_earning = {'id': 1,
-                        'category': 'Работа',
-                        }
-
-    def add_category_earning(self):
-        session.add(CategoryEarning(
-                                    category=self.category_earning['category']))
-        session.commit()
 
     def setUp(self):
         Base.metadata.create_all(engine)
@@ -79,32 +55,35 @@ class TestCategoryEarning(unittest.TestCase):
         Base.metadata.drop_all(engine)
 
     def test_query_category_earning(self):
-        self.add_category_earning()
+        add_example_category_earning(session)
         expected = [CategoryEarning(id=1, category='Работа')]
         category_earning = session.query(CategoryEarning).all()
         self.assertEqual(category_earning, expected)
 
     def test_repr(self):
-        self.add_category_earning()
-        expected = f"<CategoryEarning('{self.category_earning['id']}', " \
-            f"'{self.category_earning['category']}')>"
+        add_example_category_earning(session)
+        expected = f"<CategoryEarning('{example_category_earning['id']}', " \
+            f"'{example_category_earning['category']}', '{example_category_earning['user_id']}')>"
         category_earning = session.query(CategoryEarning).get(1)
         self.assertEqual(repr(category_earning), expected)
 
+    def test_delete_category(self):
+        add_example_category_earning(session)
+        category = session.query(CategoryEarning).get(1)
+        category.delete_category(session)
+        answer = session.query(CategoryEarning).get(1)
+        self.assertEqual(answer, None)
+
+    def test_update_category(self):
+        new_category = 'Подработка'
+        add_example_category_earning(session)
+        category = session.query(CategoryEarning).get(1)
+        category.update_category(session, new_category)
+        category = session.query(CategoryEarning).get(1)
+        self.assertEqual(category.category, new_category)
+
 
 class TestEarning(unittest.TestCase):
-    earning = {'id': 1,
-               'user_id': 1,
-               'category_id': 1,
-               'amount_money': 100.123,
-               }
-
-    def add_earning(self):
-        session.add(Earning(
-                            user_id=self.earning['user_id'],
-                            category_id=self.earning['category_id'],
-                            amount_money=self.earning['amount_money']))
-        session.commit()
 
     def setUp(self):
         Base.metadata.create_all(engine)
@@ -113,27 +92,28 @@ class TestEarning(unittest.TestCase):
         Base.metadata.drop_all(engine)
 
     def test_query_earning(self):
-        self.add_earning()
+        add_example_earning(session)
         expected = [Earning(id=1, user_id=1, category_id=1, amount_money=0)]
         earnings = session.query(Earning).all()
         self.assertEqual(earnings, expected)
 
     def test_repr(self):
-        self.add_earning()
-        expected = f"<Earning('{self.earning['id']}', '{self.earning['user_id']}', " \
-            f"'{self.earning['category_id']}', '{self.earning['amount_money']}')>"
+        add_example_earning(session)
+        expected = f"<Earning('{example_earning['id']}', '{example_earning['user_id']}', " \
+            f"'{example_earning['category_id']}', '{example_earning['amount_money']}')>"
         earning = session.query(Earning).get(1)
         self.assertEqual(repr(earning), expected)
 
+    def test_delete_list_earning(self):
+        for _ in range(2):
+            add_example_earning(session)
+        earnings = session.query(Earning).all()
+        Earning.delete_list_earning(session, earnings)
+        answer = session.query(Earning).all()
+        self.assertEqual(answer, [])
+
 
 class TestCategoryConsumption(unittest.TestCase):
-    category_consumption = {'id': 1,
-                            'category': 'Транспорт'}
-
-    def add_category_consumption(self):
-        session.add(CategoryConsumption(
-                                        category=self.category_consumption['category']))
-        session.commit()
 
     def setUp(self):
         Base.metadata.create_all(engine)
@@ -142,33 +122,35 @@ class TestCategoryConsumption(unittest.TestCase):
         Base.metadata.drop_all(engine)
 
     def test_query_category_consumption(self):
-        self.add_category_consumption()
+        add_example_category_consumption(session)
         expected = [CategoryConsumption(id=1, category='Транспорт')]
         category_consumption = session.query(CategoryConsumption).all()
         self.assertEqual(category_consumption, expected)
 
     def test_repr(self):
-        self.add_category_consumption()
-        expected = f"<CategoryConsumption('{self.category_consumption['id']}', " \
-            f"'{self.category_consumption['category']}')>"
-        category_consumption = session.query(CategoryConsumption).get(self.category_consumption['id'])
+        add_example_category_consumption(session)
+        expected = f"<CategoryConsumption('{example_category_consumption['id']}', " \
+            f"'{example_category_consumption['category']}', '{example_category_consumption['user_id']}')>"
+        category_consumption = session.query(CategoryConsumption).get(example_category_consumption['id'])
         self.assertEqual(repr(category_consumption), expected)
+
+    def test_delete_category(self):
+        add_example_category_consumption(session)
+        category = session.query(CategoryConsumption).get(1)
+        category.delete_category(session)
+        answer = session.query(CategoryConsumption).get(1)
+        self.assertEqual(answer, None)
+
+    def test_update_category(self):
+        new_category = 'Шаурма'
+        add_example_category_consumption(session)
+        category = session.query(CategoryConsumption).get(1)
+        category.update_category(session, new_category)
+        category = session.query(CategoryConsumption).get(1)
+        self.assertEqual(category.category, new_category)
 
 
 class TestConsumption(unittest.TestCase):
-    consumption = {'id': 1,
-                   'user_id': 1,
-                   'category_id': 1,
-                   'amount_money': 100.123,
-                   }
-
-    def add_consumption(self):
-        session.add(Consumption(
-                                user_id=self.consumption['user_id'],
-                                category_id=self.consumption['category_id'],
-                                amount_money=self.consumption['amount_money']))
-        session.commit()
-
     def setUp(self):
         Base.metadata.create_all(engine)
 
@@ -176,15 +158,23 @@ class TestConsumption(unittest.TestCase):
         Base.metadata.drop_all(engine)
 
     def test_query_consumption(self):
-        self.add_consumption()
+        add_example_consumption(session)
         expected = [Consumption(id=1, user_id=1, category_id=1, amount_money=1)]
         consumptions = session.query(Consumption).all()
         self.assertEqual(consumptions, expected)
 
     def test_repr(self):
-        self.add_consumption()
-        expected = f"<Consumption('{self.consumption['id']}', " \
-            f"'{self.consumption['user_id']}', '{self.consumption['category_id']}', " \
-            f"'{self.consumption['amount_money']}')>"
+        add_example_consumption(session)
+        expected = f"<Consumption('{example_consumption['id']}', " \
+            f"'{example_consumption['user_id']}', '{example_consumption['category_id']}', " \
+            f"'{example_consumption['amount_money']}')>"
         consumption = session.query(Consumption).get(1)
         self.assertEqual(repr(consumption), expected)
+
+    def test_delete_list_consumption(self):
+        for _ in range(2):
+            add_example_consumption(session)
+        consumptions = session.query(Consumption).all()
+        Consumption.delete_list_consumption(session, consumptions)
+        answer = session.query(Consumption).all()
+        self.assertEqual(answer, [])

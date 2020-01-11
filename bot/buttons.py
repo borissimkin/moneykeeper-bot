@@ -1,5 +1,13 @@
 
-text_button_back = 'Назад'
-text_button_exit = 'Выход'
-text_button_cancel = 'Отмена'
-text_button_confirm = 'Подтвердить'
+
+class Buttons:
+    earning = 'Доход'
+    consumption = 'Расход'
+    default = 'По умолчанию'
+    add = 'Добавить'
+    delete = 'Удалить'
+    edit = 'Изменить'
+    back = 'Назад'
+    exit = 'Выход'
+    cancel = 'Отмена'
+    confirm = 'Подтвердить'
