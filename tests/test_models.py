@@ -113,6 +113,13 @@ class TestEarning(unittest.TestCase):
         answer = session.query(Earning).all()
         self.assertEqual(answer, [])
 
+    def test_get_time_creation(self):
+        add_example_earning(session)
+        earning = session.query(Earning).get(1)
+        answer = earning.get_str_time_creation()
+        expected = '10.01.2020, 12:30'
+        self.assertEqual(answer, expected)
+
 
 class TestCategoryConsumption(unittest.TestCase):
 
@@ -179,3 +186,10 @@ class TestConsumption(unittest.TestCase):
         Consumption.delete_list_consumption(session, consumptions)
         answer = session.query(Consumption).all()
         self.assertEqual(answer, [])
+
+    def test_get_time_creation(self):
+        add_example_consumption(session)
+        consumption = session.query(Consumption).get(1)
+        answer = consumption.get_str_time_creation()
+        expected = '10.01.2020, 12:30'
+        self.assertEqual(answer, expected)

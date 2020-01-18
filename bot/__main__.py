@@ -5,6 +5,7 @@ from bot.commands.start import StartHandler
 from bot.conversations.consumption.handlers import add_consumption
 from bot.conversations.earning.handlers import add_earning
 from bot.conversations.edit_categories.handlers import edit_categories
+from bot.conversations.delete_transaction.handlers import delete_transaction
 
 
 def start_handlers():
@@ -15,6 +16,8 @@ def start_handlers():
     dispatcher.add_handler(add_earning)
 
     dispatcher.add_handler(edit_categories)
+
+    dispatcher.add_handler(delete_transaction)
 
 
 if __name__ == '__main__':

@@ -115,6 +115,9 @@ class Earning(Base):
             session.delete(e)
         session.commit()
 
+    def get_str_time_creation(self):
+        return datetime.datetime.strftime(self.time_creation, '%d.%m.%Y, %H:%M')
+
 
 class CategoryConsumption(Base):
     __tablename__ = 'category_consumption'
@@ -182,6 +185,9 @@ class Consumption(Base):
 
     def __eq__(self, other):
         return isinstance(other, Consumption) and other.id == self.id
+
+    def get_str_time_creation(self):
+        return datetime.datetime.strftime(self.time_creation, '%d.%m.%Y, %H:%M')
 
     @classmethod
     def delete_list_consumption(cls, session, consumptions: list):
