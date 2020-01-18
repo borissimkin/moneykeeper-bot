@@ -2,8 +2,8 @@ from telegram.ext import CommandHandler
 
 from bot import dispatcher, updater
 from bot.commands.start import StartHandler
-from bot.conversations.consumption.handlers import add_consumption
-from bot.conversations.earning.handlers import add_earning
+from bot.conversations.add_consumption.handlers import add_consumption
+from bot.conversations.add_earning.handlers import add_earning
 from bot.conversations.edit_categories.handlers import edit_categories
 from bot.conversations.delete_transaction.handlers import delete_transaction
 

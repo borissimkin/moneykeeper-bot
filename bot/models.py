@@ -94,7 +94,7 @@ class CategoryEarning(Base):
 
 
 class Earning(Base):
-    __tablename__ = 'earning'
+    __tablename__ = 'add_earning'
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))
@@ -171,7 +171,7 @@ class CategoryConsumption(Base):
 
 
 class Consumption(Base):
-    __tablename__ = 'consumption'
+    __tablename__ = 'add_consumption'
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))

@@ -4,9 +4,9 @@ from telegram.ext import MessageHandler, ConversationHandler, Filters, CallbackC
 
 from bot import config, bot
 from bot.buttons import Buttons
-from bot.conversations.earning.messages import text_timeout, text_exit_point, text_error_enter_amount_money, \
+from bot.conversations.add_earning.messages import text_timeout, text_exit_point, text_error_enter_amount_money, \
     text_to_choose_category, text_success_add_earning, text_to_write_money
-from bot.conversations.earning.states import States
+from bot.conversations.add_earning.states import States
 from bot.keyboards import keyboard_exit, make_buttons_for_choose_category, keyboard_confirm
 from bot.messages import text_confirm_add_transaction
 from bot.models import CategoryEarning, session, User, Earning
@@ -149,5 +149,5 @@ add_earning = ConversationHandler(
     conversation_timeout=config['conversations']['timeout'],
     fallbacks=[CommandHandler('exit_point', exit_point)],
 
-    name="earning",
+    name="add_earning",
 )
