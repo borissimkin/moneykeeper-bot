@@ -24,10 +24,7 @@ class EarningDeleter(TransactionDeleter):
         return True if earning else False
 
     def make_text_success_delete_transaction(self):
-        earning = self.get_transaction()
-        category = self.session.query(CategoryEarning).get(earning.category_id)
-        return f'Вы успешно удалили доход в размере <b>{earning.amount_money} ' \
-            f'{ruble_declension(int(earning.amount_money))}</b> категории <b>{category.category}</b>.'
+        return 'Вы успешно удалили доход.'
 
     def delete_transaction(self):
         earning = self.get_transaction()

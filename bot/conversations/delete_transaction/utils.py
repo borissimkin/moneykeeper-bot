@@ -8,5 +8,5 @@ def message_has_delete_consumption(command_text: str):
 
 def get_id_transaction(command_text: str):
     id_transaction = re.findall(r"\d{1,}", command_text)[0]
-    return id_transaction
+    return int(id_transaction)
 

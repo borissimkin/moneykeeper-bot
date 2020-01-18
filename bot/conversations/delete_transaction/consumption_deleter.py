@@ -24,10 +24,7 @@ class ConsumptionDeleter(TransactionDeleter):
         return True if consumption else False
 
     def make_text_success_delete_transaction(self):
-        consumption = self.get_transaction()
-        category = self.session.query(CategoryConsumption).get(consumption.category_id)
-        return f'Вы успешно удалили расход в размере <b>{consumption.amount_money} ' \
-            f'{ruble_declension(int(consumption.amount_money))}</b> на категорию <b>{category.category}</b>.'
+        return 'Вы успешно удалили расход.'
 
     def delete_transaction(self):
         consumption = self.get_transaction()

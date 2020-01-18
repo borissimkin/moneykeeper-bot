@@ -49,7 +49,7 @@ def to_confirm_delete_transaction(update: Update, context: CallbackContext):
     if context.user_data['transaction_deleter'].check_exist_transaction():
         bot.send_message(chat_id=update.message.from_user.id,
                          text=context.user_data['transaction_deleter'].make_text_delete_transaction(),
-                         reply_markup=ReplyKeyboardMarkup(add_button_exit([Buttons.confirm]),
+                         reply_markup=ReplyKeyboardMarkup(add_button_exit([[Buttons.confirm]]),
                                                           resize_keyboard=True),
                          parse_mode=telegram.ParseMode.HTML)
 

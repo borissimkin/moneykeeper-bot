@@ -16,4 +16,4 @@ class TestMessageHasDeleteConsumption(unittest.TestCase):
 class TestGetIdTransaction(unittest.TestCase):
     def test_get_id_transaction(self):
         text_command = '/del_c69'
-        self.assertEqual(get_id_transaction(text_command), '69')
+        self.assertEqual(get_id_transaction(text_command), 69)
