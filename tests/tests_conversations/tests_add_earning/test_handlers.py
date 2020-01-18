@@ -3,7 +3,7 @@ from unittest import mock
 
 from sqlalchemy.orm import sessionmaker
 
-from bot.conversations.earning.handlers import add_earning_in_db
+from bot.conversations.add_earning.handlers import add_earning_in_db
 from bot.models import User, CategoryEarning, Earning, CategoryConsumption, Consumption, Base
 from tests.test_models import engine
 from tests.utils_models import add_example_user, \

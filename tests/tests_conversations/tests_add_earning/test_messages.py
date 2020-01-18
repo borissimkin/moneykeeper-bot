@@ -1,6 +1,6 @@
 import unittest
 
-from bot.conversations.earning.messages import text_to_choose_category
+from bot.conversations.add_earning.messages import text_to_choose_category
 
 
 class TestTextToChooseCategory(unittest.TestCase):

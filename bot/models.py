@@ -94,16 +94,17 @@ class CategoryEarning(Base):
 
 
 class Earning(Base):
-    __tablename__ = 'earning'
+    __tablename__ = 'add_earning'
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))
     category_id = Column(Integer, ForeignKey('category_earning.id'))
     amount_money = Column(Float, default=0)
+    time_creation = Column(DateTime, default=datetime.datetime.now())
 
     def __repr__(self):
         return f"<Earning('{self.id}', '{self.user_id}', '{self.category_id}', " \
-            f"'{self.amount_money}')>"
+            f"'{self.amount_money}', '{self.time_creation}')>"
 
     def __eq__(self, other):
         return isinstance(other, Earning) and other.id == self.id
@@ -113,6 +114,9 @@ class Earning(Base):
         for e in earnings:
             session.delete(e)
         session.commit()
+
+    def get_str_time_creation(self):
+        return datetime.datetime.strftime(self.time_creation, '%d.%m.%Y, %H:%M')
 
 
 class CategoryConsumption(Base):
@@ -167,19 +171,23 @@ class CategoryConsumption(Base):
 
 
 class Consumption(Base):
-    __tablename__ = 'consumption'
+    __tablename__ = 'add_consumption'
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))
     category_id = Column(Integer, ForeignKey('category_consumption.id'))
     amount_money = Column(Float, default=0)
+    time_creation = Column(DateTime, default=datetime.datetime.now())
 
     def __repr__(self):
         return f"<Consumption('{self.id}', '{self.user_id}', '{self.category_id}', " \
-            f"'{self.amount_money}')>"
+            f"'{self.amount_money}', '{self.time_creation}')>"
 
     def __eq__(self, other):
         return isinstance(other, Consumption) and other.id == self.id
+
+    def get_str_time_creation(self):
+        return datetime.datetime.strftime(self.time_creation, '%d.%m.%Y, %H:%M')
 
     @classmethod
     def delete_list_consumption(cls, session, consumptions: list):

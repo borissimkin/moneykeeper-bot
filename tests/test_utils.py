@@ -1,7 +1,7 @@
 import unittest
 
 from bot.buttons import Buttons
-from bot.utils import add_button_cancel, add_buttons_exit_and_back, add_button_exit
+from bot.utils import add_button_cancel, add_buttons_exit_and_back, add_button_exit, ruble_declension
 
 
 class TestAddButtonCancel(unittest.TestCase):
@@ -35,3 +35,14 @@ class TestAddButtonsExit(unittest.TestCase):
         buttons = [['Доход', 'Расход']]
         expected = [['Доход', 'Расход'], [Buttons.exit]]
         self.assertListEqual(add_button_exit(buttons), expected)
+
+
+class TestRubleDeclension(unittest.TestCase):
+    def test_one_ruble(self):
+        expected = 'рубль'
+        self.assertEqual(ruble_declension(1), expected)
+
+    def test_two_ruble(self):
+        expected = 'рубля'
+        self.assertEqual(ruble_declension(2), expected)
+

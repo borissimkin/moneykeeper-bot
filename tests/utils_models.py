@@ -21,6 +21,7 @@ example_earning = {'id': 1,
                    'user_id': 1,
                    'category_id': 1,
                    'amount_money': 100.123,
+                   'time_creation': now,
                    }
 
 example_category_consumption = {'id': 1,
@@ -31,6 +32,7 @@ example_consumption = {'id': 1,
                        'user_id': 1,
                        'category_id': 1,
                        'amount_money': 100.123,
+                       'time_creation': now,
                        }
 
 
@@ -55,7 +57,8 @@ def add_example_earning(session):
     session.add(Earning(
         user_id=example_earning['user_id'],
         category_id=example_earning['category_id'],
-        amount_money=example_earning['amount_money']))
+        amount_money=example_earning['amount_money'],
+        time_creation=example_earning['time_creation']))
     session.commit()
 
 
@@ -69,5 +72,5 @@ def add_example_consumption(session):
     session.add(Consumption(user_id=example_consumption['user_id'],
                             category_id=example_consumption['category_id'],
                             amount_money=example_consumption['amount_money'],
-                            ))
+                            time_creation=example_consumption['time_creation']))
     session.commit()

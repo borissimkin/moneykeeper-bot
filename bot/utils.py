@@ -1,5 +1,6 @@
 import datetime
 
+import pymorphy2
 import sqlalchemy
 
 from bot.buttons import Buttons
@@ -70,3 +71,10 @@ def add_buttons_exit_and_back(buttons):
 def add_button_exit(buttons):
     buttons.append([Buttons.exit])
     return buttons
+
+
+def ruble_declension(count_ruble: int):
+    morph = pymorphy2.MorphAnalyzer()
+    money_morph = morph.parse('рубль')[0]
+    return money_morph.make_agree_with_number(int(count_ruble)).word
+

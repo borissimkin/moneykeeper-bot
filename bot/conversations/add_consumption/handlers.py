@@ -5,7 +5,7 @@ from telegram.ext import ConversationHandler, MessageHandler, Filters, CallbackC
 from bot import bot, config
 from bot.keyboards import keyboard_confirm, keyboard_exit, make_buttons_for_choose_category
 from bot.buttons import Buttons
-from bot.conversations.consumption.messages import text_to_choose_category, text_exit_point, text_timeout, \
+from bot.conversations.add_consumption.messages import text_to_choose_category, text_exit_point, text_timeout, \
      text_success_add_consumption, text_error_enter_amount_money, text_to_write_money
 from bot.messages import text_confirm_add_transaction
 from bot.models import CategoryConsumption, session, User, Consumption
@@ -151,7 +151,7 @@ add_consumption = ConversationHandler(
     conversation_timeout=config['conversations']['timeout'],
     fallbacks=[CommandHandler('exit_point', exit_point)],
 
-    name="consumption",
+    name="add_consumption",
 )
 
 

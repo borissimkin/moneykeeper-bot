@@ -100,7 +100,8 @@ class TestEarning(unittest.TestCase):
     def test_repr(self):
         add_example_earning(session)
         expected = f"<Earning('{example_earning['id']}', '{example_earning['user_id']}', " \
-            f"'{example_earning['category_id']}', '{example_earning['amount_money']}')>"
+            f"'{example_earning['category_id']}', '{example_earning['amount_money']}', " \
+            f"'{example_earning['time_creation']}')>"
         earning = session.query(Earning).get(1)
         self.assertEqual(repr(earning), expected)
 
@@ -111,6 +112,13 @@ class TestEarning(unittest.TestCase):
         Earning.delete_list_earning(session, earnings)
         answer = session.query(Earning).all()
         self.assertEqual(answer, [])
+
+    def test_get_time_creation(self):
+        add_example_earning(session)
+        earning = session.query(Earning).get(1)
+        answer = earning.get_str_time_creation()
+        expected = '10.01.2020, 12:30'
+        self.assertEqual(answer, expected)
 
 
 class TestCategoryConsumption(unittest.TestCase):
@@ -167,7 +175,7 @@ class TestConsumption(unittest.TestCase):
         add_example_consumption(session)
         expected = f"<Consumption('{example_consumption['id']}', " \
             f"'{example_consumption['user_id']}', '{example_consumption['category_id']}', " \
-            f"'{example_consumption['amount_money']}')>"
+            f"'{example_consumption['amount_money']}', '{example_consumption['time_creation']}')>"
         consumption = session.query(Consumption).get(1)
         self.assertEqual(repr(consumption), expected)
 
@@ -178,3 +186,10 @@ class TestConsumption(unittest.TestCase):
         Consumption.delete_list_consumption(session, consumptions)
         answer = session.query(Consumption).all()
         self.assertEqual(answer, [])
+
+    def test_get_time_creation(self):
+        add_example_consumption(session)
+        consumption = session.query(Consumption).get(1)
+        answer = consumption.get_str_time_creation()
+        expected = '10.01.2020, 12:30'
+        self.assertEqual(answer, expected)

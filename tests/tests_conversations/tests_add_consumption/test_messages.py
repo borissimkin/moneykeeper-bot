@@ -1,6 +1,6 @@
 import unittest
 
-from bot.conversations.consumption.messages import text_to_choose_category
+from bot.conversations.add_consumption.messages import text_to_choose_category
 
 
 class TestTextToChooseCategory(unittest.TestCase):

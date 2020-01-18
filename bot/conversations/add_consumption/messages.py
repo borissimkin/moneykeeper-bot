@@ -1,12 +1,9 @@
-import pymorphy2 as pymorphy2
+from bot.utils import ruble_declension
 
 
 def text_to_choose_category(amount_money):
-    morph = pymorphy2.MorphAnalyzer()
-    money_morph = morph.parse('рубль')[0]
     return 'Выберите категорию, куда вы потратили <b>{} {}.</b>'.format(amount_money,
-                                                                        money_morph.
-                                                                        make_agree_with_number(int(amount_money)).word)
+                                                                        ruble_declension(int(amount_money)))
 
 
 def text_error_enter_amount_money():
