@@ -11,3 +11,9 @@ class Buttons:
     exit = 'Выход'
     cancel = 'Отмена'
     confirm = 'Подтвердить'
+    next = 'Следующие'
+    previous = 'Прыдыдущие'
+    earnings = 'Доходы'
+    consumptions = 'Расходы'
+    all = 'Все'
+

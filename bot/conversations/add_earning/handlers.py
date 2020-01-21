@@ -10,7 +10,7 @@ from bot.conversations.add_earning.states import States
 from bot.keyboards import keyboard_exit, make_buttons_for_choose_category, keyboard_confirm
 from bot.messages import text_confirm_add_transaction
 from bot.models import CategoryEarning, session, User, Earning
-from bot.utils import update_username, update_activity, add_buttons_exit_and_back, exit_dialog, back
+from bot.utils import update_username, update_activity, add_buttons_exit_and_back, exit_dialog, back, clear_user_data
 
 
 @update_username
@@ -28,6 +28,7 @@ def to_write_money(update: Update, context: CallbackContext):
     return States.TO_WRITE_AMOUNT_MONEY
 
 
+@clear_user_data
 def handler_timeout(update: Update, context: CallbackContext):
     user_id = context.effective_user['id']
     bot.send_message(chat_id=user_id,
@@ -36,6 +37,7 @@ def handler_timeout(update: Update, context: CallbackContext):
                      parse_mode=telegram.ParseMode.HTML)
 
 
+@clear_user_data
 def exit_point(update: Update, context: CallbackContext):
     bot.send_message(chat_id=update.message.from_user.id,
                      text=text_exit_point(),

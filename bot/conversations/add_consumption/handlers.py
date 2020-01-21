@@ -9,7 +9,8 @@ from bot.conversations.add_consumption.messages import text_to_choose_category, 
      text_success_add_consumption, text_error_enter_amount_money, text_to_write_money
 from bot.messages import text_confirm_add_transaction
 from bot.models import CategoryConsumption, session, User, Consumption
-from bot.utils import exit_dialog, back, update_username, update_activity, add_button_cancel, add_buttons_exit_and_back
+from bot.utils import exit_dialog, back, update_username, update_activity, add_button_cancel, add_buttons_exit_and_back, \
+    clear_user_data
 from .states import States
 
 
@@ -20,6 +21,7 @@ def entry_point(update: Update, context: CallbackContext):
     return to_write_money(update, context)
 
 
+@clear_user_data
 def exit_point(update: Update, context: CallbackContext):
     bot.send_message(chat_id=update.message.from_user.id,
                      text=text_exit_point(),
@@ -28,6 +30,7 @@ def exit_point(update: Update, context: CallbackContext):
     return ConversationHandler.END
 
 
+@clear_user_data
 def handler_timeout(update: Update, context: CallbackContext):
     user_id = context.effective_user['id']
     bot.send_message(chat_id=user_id,
