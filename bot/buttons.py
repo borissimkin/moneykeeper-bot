@@ -15,4 +15,5 @@ class Buttons:
     previous = 'Прыдыдущие'
     earnings = 'Доходы'
     consumptions = 'Расходы'
+    all = 'Все'
 

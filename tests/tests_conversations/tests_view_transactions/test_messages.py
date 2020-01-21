@@ -37,7 +37,7 @@ class TestMakeTextListTransactions(unittest.TestCase):
                                 user_id=1))
         session.commit()
         list_transactions = make_list_transactions(session, example_user['telegram_user_id'])
-        expected = f"Доход 0.0 руб. {example_category_earning['category']} 10.01.2020, 12:30\n" \
-            f"Расход 0.0 руб. {example_category_consumption['category']} 09.01.2020, 12:30\n"
+        expected = f"Доход 0.0 руб. {example_category_earning['category']} 10.01.2020, 12:30 - /del_e1\n" \
+            f"Расход 0.0 руб. {example_category_consumption['category']} 09.01.2020, 12:30 - /del_c1\n"
         actual = make_text_list_transactions(session, list_transactions)
         self.assertEqual(actual, expected)

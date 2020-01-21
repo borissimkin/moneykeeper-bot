@@ -3,12 +3,14 @@ from bot.models import Earning, CategoryEarning, CategoryConsumption, session
 
 def make_text_earning(session, earning):
     category = session.query(CategoryEarning).get(earning.category_id)
-    return f'Доход {earning.amount_money} руб. {category.category} {earning.get_str_time_creation()}\n'
+    return f'Доход {earning.amount_money} руб. {category.category} {earning.get_str_time_creation()} - ' \
+        f'/del_e{earning.id}\n'
 
 
 def make_text_consumption(session, consumption):
     category = session.query(CategoryConsumption).get(consumption.category_id)
-    return f'Расход {consumption.amount_money} руб. {category.category} {consumption.get_str_time_creation()}\n'
+    return f'Расход {consumption.amount_money} руб. {category.category} {consumption.get_str_time_creation()} - ' \
+        f'/del_c{consumption.id}\n'
 
 
 def make_text_list_transactions(session, list_transactions: list):
