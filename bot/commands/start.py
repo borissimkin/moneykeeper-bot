@@ -11,7 +11,7 @@ class StartHandler:
     text_command = 'start'
 
     @classmethod
-    def start(cls, update: Update, context: CallbackContext):
+    def handler(cls, update: Update, context: CallbackContext):
         if not cls.check_user_in_db(update.message.from_user.id, session):
             cls.add_user_in_db(update, session)
             cls.create_default_categories_for_earning_and_consumption(update.message.from_user.id)
