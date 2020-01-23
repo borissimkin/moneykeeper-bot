@@ -53,12 +53,12 @@ def add_example_category_earning(session):
     session.commit()
 
 
-def add_example_earning(session):
+def add_example_earning(session, time_creation=example_earning['time_creation']):
     session.add(Earning(
         user_id=example_earning['user_id'],
         category_id=example_earning['category_id'],
         amount_money=example_earning['amount_money'],
-        time_creation=example_earning['time_creation']))
+        time_creation=time_creation))
     session.commit()
 
 
@@ -68,9 +68,9 @@ def add_example_category_consumption(session):
     session.commit()
 
 
-def add_example_consumption(session):
+def add_example_consumption(session, time_creation=example_consumption['time_creation']):
     session.add(Consumption(user_id=example_consumption['user_id'],
                             category_id=example_consumption['category_id'],
                             amount_money=example_consumption['amount_money'],
-                            time_creation=example_consumption['time_creation']))
+                            time_creation=time_creation))
     session.commit()

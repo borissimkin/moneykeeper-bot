@@ -42,7 +42,12 @@ class User(Base):
 
     def get_username(self):
         username = self.telegram_username
-        return username if username else f'{self.first_name} {self.last_name}'
+        if username:
+            return username
+        elif self.last_name:
+            return f'{self.first_name} {self.last_name}'
+        else:
+            return f'{self.first_name}'
 
     @classmethod
     def get_user_by_telegram_user_id(cls, session, telegram_user_id):
