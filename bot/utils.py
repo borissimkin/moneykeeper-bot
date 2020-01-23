@@ -2,7 +2,6 @@ import datetime
 
 import pymorphy2
 import sqlalchemy
-from decorator import decorator
 
 from bot.buttons import Buttons
 from bot.exceptions import BackIsNotDefined, ExitIsNotDefined
