@@ -2,6 +2,7 @@ import datetime
 
 import pymorphy2
 import sqlalchemy
+from decorator import decorator
 
 from bot.buttons import Buttons
 from bot.exceptions import BackIsNotDefined, ExitIsNotDefined
@@ -78,3 +79,29 @@ def ruble_declension(count_ruble: int):
     money_morph = morph.parse('рубль')[0]
     return money_morph.make_agree_with_number(int(count_ruble)).word
 
+
+def get_past_minutes_day(now):
+    return now.hour * 60 + now.minute
+
+
+def to_text_weekday(weekday: int):
+    if weekday == 0:
+        return 'Понедельник'
+    elif weekday == 1:
+        return 'Вторник'
+    elif weekday == 2:
+        return 'Среда'
+    elif weekday == 3:
+        return 'Четверг'
+    elif weekday == 4:
+        return 'Пятница'
+    elif weekday == 5:
+        return 'Суббота'
+    elif weekday == 6:
+        return 'Воскресенье'
+
+
+def text_goodbye(now):
+    if now.hour >= 19:
+        return 'Доброй ночи!'
+    return 'Хорошего дня!'
