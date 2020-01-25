@@ -101,6 +101,4 @@ def to_text_weekday(weekday: int):
 
 
 def text_goodbye(now):
-    if now.hour >= 19:
-        return 'Доброй ночи!'
-    return 'Хорошего дня!'
+    return 'Доброй ночи!' if now.hour >= 19 else 'Хорошего дня!'
