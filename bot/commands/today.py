@@ -5,9 +5,11 @@ from telegram import Update
 from telegram.ext import CallbackContext
 
 from bot import bot
+
 from bot.models import User, session, CategoryEarning, CategoryConsumption
 from bot.statistics.utils import get_earnings_today, get_consumptions_today, total_amount_money
 from bot.utils import update_activity, update_username, to_text_weekday, text_goodbye
+
 
 text_command = 'today'
 

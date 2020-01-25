@@ -36,6 +36,8 @@ def start_handlers():
                        config['jobs']['results_time'], '%H:%M:%S').time())
 
 
+
+
 if __name__ == '__main__':
     start_handlers()
     updater.start_polling()
