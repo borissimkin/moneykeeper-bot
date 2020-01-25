@@ -5,8 +5,11 @@ from telegram import Update
 from telegram.ext import CallbackContext
 
 from bot import bot
-from bot.models import User, session, Earning, Consumption, CategoryEarning, CategoryConsumption
-from bot.utils import update_activity, update_username, get_past_minutes_day, to_text_weekday, text_goodbye
+
+from bot.models import User, session, CategoryEarning, CategoryConsumption
+from bot.statistics.utils import get_earnings_today, get_consumptions_today, total_amount_money
+from bot.utils import update_activity, update_username, to_text_weekday, text_goodbye
+
 
 text_command = 'today'
 
@@ -28,29 +31,6 @@ def make_text_today(session, now, user: User):
         f'{make_text_earnings(session, now, user)}\n' \
         f'{make_text_total(session, now, user)}\n' \
         f'{text_goodbye(now)}'
-
-
-def get_earnings_today(session, now, user: User):
-    today_minutes = get_past_minutes_day(now)
-    earnings = session.query(Earning).filter(
-        Earning.user_id == user.id,
-        Earning.time_creation >= now - datetime.timedelta(minutes=today_minutes)).all()
-    return earnings
-
-
-def get_consumptions_today(session, now, user: User):
-    today_minutes = get_past_minutes_day(now)
-    consumptions = session.query(Consumption).filter(
-        Consumption.user_id == user.id,
-        Consumption.time_creation >= now - datetime.timedelta(minutes=today_minutes)).all()
-    return consumptions
-
-
-def total_amount_money(transactions: list):
-    total = .0
-    for t in transactions:
-        total += t.amount_money
-    return total
 
 
 def make_text_earnings(session, now, user):

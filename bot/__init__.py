@@ -15,3 +15,4 @@ except FileNotFoundError as e:
 updater = Updater(token=config['telegram']['token'], use_context=True)
 bot = Bot(token=config['telegram']['token'])
 dispatcher = updater.dispatcher
+jobs = updater.job_queue

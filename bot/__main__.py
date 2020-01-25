@@ -1,6 +1,8 @@
+import datetime
+
 from telegram.ext import CommandHandler, CallbackQueryHandler
 
-from bot import dispatcher, updater
+from bot import dispatcher, updater, jobs, config
 from bot.commands.start import StartHandler
 from bot.commands import today
 from bot.conversations.add_consumption.handlers import add_consumption
@@ -8,6 +10,7 @@ from bot.conversations.add_earning.handlers import add_earning
 from bot.conversations.edit_categories.handlers import edit_categories
 from bot.conversations.delete_transaction.handlers import delete_transaction
 from bot.conversations.view_transactions.query_handlers import view_transactions, handler_view_transactions
+from bot.job_queue.handlers import job_results
 
 
 def start_handlers():
@@ -27,6 +30,10 @@ def start_handlers():
 
     dispatcher.add_handler(CallbackQueryHandler(handler_view_transactions,
                                                 pass_user_data=True))
+
+    jobs.run_daily(callback=job_results,
+                   time=datetime.datetime.strptime(
+                       config['jobs']['results_time'], '%H:%M:%S').time())
 
 
 

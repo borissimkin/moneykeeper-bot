@@ -8,3 +8,6 @@ conversations:
 
 view_transactons:
   count_transactions_in_list: 10
+
+jobs:
+  results_time: '20:00:00'
