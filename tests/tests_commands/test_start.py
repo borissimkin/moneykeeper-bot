@@ -4,7 +4,7 @@ from unittest import mock
 from sqlalchemy.orm import sessionmaker
 import telegram
 
-from bot.commands.start import StartHandler
+from bot.commands.start import add_user_in_db, check_user_in_db
 from bot.models import Base, User
 from tests.test_models import engine
 from tests.utils_models import example_user, add_example_user
@@ -34,7 +34,7 @@ class TestStart(unittest.TestCase):
 
     def test_add_user_in_db(self):
         update = self.init_mock_update()
-        StartHandler.add_user_in_db(update, session)
+        add_user_in_db(update, session)
         answer = session.query(User).get(1)
         expected = User(id=1,
                         )
@@ -42,7 +42,7 @@ class TestStart(unittest.TestCase):
 
     def test_check_user_in_db_user_exist(self):
         add_example_user(session)
-        self.assertTrue(StartHandler.check_user_in_db(example_user['telegram_user_id'], session))
+        self.assertTrue(check_user_in_db(example_user['telegram_user_id'], session))
 
     def test_check_user_in_db_user_not_exits(self):
-        self.assertFalse(StartHandler.check_user_in_db(example_user['telegram_user_id'], session))
+        self.assertFalse(check_user_in_db(example_user['telegram_user_id'], session))

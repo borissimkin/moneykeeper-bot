@@ -1,11 +1,9 @@
 import datetime
-import logging
 
 from telegram.ext import CommandHandler, CallbackQueryHandler
-from telegram.ext.jobqueue import Days
 
 from bot import dispatcher, updater, jobs, config, logger
-from bot.commands.start import StartHandler
+from bot.commands import start
 from bot.commands import today
 from bot.commands import export_database
 from bot.conversations.add_consumption.handlers import add_consumption
@@ -17,7 +15,7 @@ from bot.job_queue.handlers import job_results, job_backup_database
 
 
 def start_handlers():
-    dispatcher.add_handler(CommandHandler(StartHandler.text_command, StartHandler.handler))
+    dispatcher.add_handler(CommandHandler(start.text_command, start.handler))
 
     dispatcher.add_handler(CommandHandler('view_transactions', view_transactions))
 
