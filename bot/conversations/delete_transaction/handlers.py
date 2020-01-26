@@ -10,11 +10,12 @@ from bot.conversations.delete_transaction.messages import text_timeout
 from bot.conversations.delete_transaction.states import States
 from bot.conversations.delete_transaction.utils import message_has_delete_consumption, get_id_transaction
 from bot.models import session
-from bot.utils import exit_dialog, update_activity, update_username, clear_user_data, add_button_exit
+from bot.utils import exit_dialog, update_activity, update_username, clear_user_data, add_button_exit, log_handler
 
 
 @update_activity
 @update_username
+@log_handler
 def entry_point(update: Update, context: CallbackContext):
     context.user_data['exit_func'] = exit_point
     if message_has_delete_consumption(update.message.text):

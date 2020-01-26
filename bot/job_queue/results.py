@@ -12,7 +12,7 @@ def make_text_week_results(session, now, user: User):
     )
     total_consumption = total_amount_money(consumptions)
     return 'За прошедшую неделю вы потратили <b>{} {}</b>.'.format(total_consumption,
-                                                                  ruble_declension(int(total_consumption)))
+                                                                   ruble_declension(int(total_consumption)))
 
 
 def is_time_to_week_results(now):

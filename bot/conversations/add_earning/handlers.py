@@ -10,11 +10,13 @@ from bot.conversations.add_earning.states import States
 from bot.keyboards import keyboard_exit, make_buttons_for_choose_category, keyboard_confirm
 from bot.messages import text_confirm_add_transaction
 from bot.models import CategoryEarning, session, User, Earning
-from bot.utils import update_username, update_activity, add_buttons_exit_and_back, exit_dialog, back, clear_user_data
+from bot.utils import update_username, update_activity, add_buttons_exit_and_back, exit_dialog, back, clear_user_data, \
+    log_handler
 
 
 @update_username
 @update_activity
+@log_handler
 def entry_point(update: Update, context: CallbackContext):
     context.user_data['exit_func'] = exit_point
     return to_write_money(update, context)

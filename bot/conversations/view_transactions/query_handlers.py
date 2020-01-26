@@ -8,11 +8,12 @@ from bot.conversations.view_transactions.keyboards import \
 from bot.conversations.view_transactions.messages import make_text_list_transactions
 from bot.conversations.view_transactions.utils import make_list_transactions, make_list_consumptions, make_list_earnings
 from bot.models import session
-from bot.utils import update_username, update_activity
+from bot.utils import update_username, update_activity, log_handler
 
 
 @update_username
 @update_activity
+@log_handler
 def view_transactions(update: Update, context: CallbackContext):
     transactions = make_list_transactions(session, update.message.from_user.id)
     text = make_text_list_transactions(session, transactions)

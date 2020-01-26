@@ -13,11 +13,13 @@ from bot.conversations.edit_categories.messages import text_choose_earning_or_co
 from bot.conversations.edit_categories.states import States
 from bot.keyboards import keyboard_confirm, make_buttons_for_choose_category
 from bot.models import session
-from bot.utils import exit_dialog, update_username, update_activity, clear_user_data, back, add_buttons_exit_and_back
+from bot.utils import exit_dialog, update_username, update_activity, clear_user_data, back, add_buttons_exit_and_back, \
+    log_handler
 
 
 @update_username
 @update_activity
+@log_handler
 def entry_point(update: Update, context: CallbackContext):
     context.user_data['exit_func'] = exit_point
     return to_choose_earning_or_consumption(update, context)

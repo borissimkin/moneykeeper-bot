@@ -10,10 +10,11 @@ from bot.conversations.add_consumption.messages import text_to_choose_category, 
 from bot.messages import text_confirm_add_transaction
 from bot.models import CategoryConsumption, session, User, Consumption
 from bot.utils import exit_dialog, back, update_username, update_activity, add_button_cancel, add_buttons_exit_and_back, \
-    clear_user_data
+    clear_user_data, log_handler
 from .states import States
 
 
+@log_handler
 @update_username
 @update_activity
 def entry_point(update: Update, context: CallbackContext):
