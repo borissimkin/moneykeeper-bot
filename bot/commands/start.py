@@ -4,6 +4,7 @@ from telegram import Update
 from telegram.ext import CallbackContext
 
 from bot import bot
+from bot.commands.help import make_text_help
 from bot.models import session, User, CategoryEarning, CategoryConsumption
 from bot.utils import log_handler
 
@@ -38,9 +39,7 @@ def check_user_in_db(user_id, session):
     return True if user else False
 
 
-def send_welcome_text(user_id):
-    user = session.query(User).filter(User.telegram_user_id == user_id).first()
-    text = 'Привет <b>{}</b>!'.format(user.get_username())
-    bot.send_message(chat_id=user_id,
-                     text=text,
+def send_welcome_text(telegram_user_id):
+    bot.send_message(chat_id=telegram_user_id,
+                     text=make_text_help(telegram_user_id),
                      parse_mode=telegram.ParseMode.HTML)
