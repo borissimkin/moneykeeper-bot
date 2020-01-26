@@ -5,12 +5,14 @@ from telegram.ext import CallbackContext
 
 from bot import bot
 from bot.models import session, User, CategoryEarning, CategoryConsumption
+from bot.utils import log_handler
 
 
 class StartHandler:
     text_command = 'start'
 
     @classmethod
+    @log_handler
     def handler(cls, update: Update, context: CallbackContext):
         if not cls.check_user_in_db(update.message.from_user.id, session):
             cls.add_user_in_db(update, session)

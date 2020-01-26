@@ -7,8 +7,10 @@ from bot import bot
 from bot.commands.today import make_text_today
 from bot.job_queue.results import make_text_week_results, is_time_to_week_results
 from bot.models import session, User
+from bot.utils import log_job_queue
 
 
+@log_job_queue
 def job_results(context: CallbackContext):
     now = datetime.datetime.now()
     users = session.query(User).all()

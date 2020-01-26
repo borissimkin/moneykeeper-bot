@@ -1,12 +1,11 @@
 import datetime
-from contextlib import contextmanager
 
 from sqlalchemy import Integer, Column, String, ForeignKey, create_engine, Float, DateTime
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, scoped_session
 
-engine = create_engine('sqlite:///database.db', echo=True)
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+engine = create_engine('sqlite:///database.db', echo=False)
 Base = declarative_base()
 
 Session = sessionmaker(bind=engine)

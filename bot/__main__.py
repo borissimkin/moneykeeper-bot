@@ -1,8 +1,9 @@
 import datetime
+import logging
 
 from telegram.ext import CommandHandler, CallbackQueryHandler
 
-from bot import dispatcher, updater, jobs, config
+from bot import dispatcher, updater, jobs, config, logger
 from bot.commands.start import StartHandler
 from bot.commands import today
 from bot.commands import export_database
@@ -37,8 +38,7 @@ def start_handlers():
     jobs.run_daily(callback=job_results,
                    time=datetime.datetime.strptime(
                        config['jobs']['results_time'], '%H:%M:%S').time())
-
-
+    logger.info("All handlers successfully launched!")
 
 
 if __name__ == '__main__':

@@ -4,12 +4,13 @@ from telegram import Update
 from telegram.ext import CallbackContext
 
 from bot import bot
-from bot.utils import restricted
+from bot.utils import restricted, log_handler
 
 text_command = 'database'
 
 
 @restricted
+@log_handler
 def handler(update: Update, context: CallbackContext):
     send_database(update.message.from_user.id)
 

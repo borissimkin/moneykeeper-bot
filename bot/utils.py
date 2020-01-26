@@ -1,10 +1,11 @@
 import datetime
+import functools
 from functools import wraps
 
 import pymorphy2
 import sqlalchemy
 
-from bot import config
+from bot import config, logger
 from bot.buttons import Buttons
 from bot.exceptions import BackIsNotDefined, ExitIsNotDefined
 from bot.models import session, User
@@ -58,9 +59,36 @@ def restricted(func):
     def wrapped(update, context, *args, **kwargs):
         user_id = update.effective_user.id
         if user_id not in config['admin_list']:
-            print("Unauthorized access denied for {}.".format(user_id))
+            logger.warning("[RESTRICTION CHAT] User={} "
+                           "called command={} "
+                           "in module={} function={}"
+                           .format(update.message.from_user.id,
+                                   update.message.text,
+                                   func.__module__,
+                                   func.__name__))
+
             return
         return func(update, context, *args, **kwargs)
+    return wrapped
+
+
+def log_handler(func):
+    @functools.wraps(func)
+    def wrapped(update, *args, **kwargs):
+        logger.debug("[HANDLER] User={} "
+                     "called handler={} in the module={}".format(update.effective_user.id, func.__name__,
+                                                                 func.__module__))
+        return func(update, *args, **kwargs)
+    return wrapped
+
+
+def log_job_queue(func):
+    @functools.wraps(func)
+    def wrapped(*args, **kwargs):
+        logger.debug("[SCHEDULER] The job_queue={} "
+                     "was called in the module={}".format(func.__name__,
+                                                          func.__module__))
+        return func(*args, **kwargs)
     return wrapped
 
 
