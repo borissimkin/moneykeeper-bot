@@ -11,3 +11,5 @@ view_transactons:
 
 jobs:
   results_time: '20:00:00'
+
+admin_list: [] # telegram_user_id

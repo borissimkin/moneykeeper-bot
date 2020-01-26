@@ -1,8 +1,10 @@
 import datetime
+from functools import wraps
 
 import pymorphy2
 import sqlalchemy
 
+from bot import config
 from bot.buttons import Buttons
 from bot.exceptions import BackIsNotDefined, ExitIsNotDefined
 from bot.models import session, User
@@ -48,6 +50,17 @@ def exit_dialog(f):
                 raise e
             return exit_func(update, context, *args, **kwargs)
         return f(update, context, *args, **kwargs)
+    return wrapped
+
+
+def restricted(func):
+    @wraps(func)
+    def wrapped(update, context, *args, **kwargs):
+        user_id = update.effective_user.id
+        if user_id not in config['admin_list']:
+            print("Unauthorized access denied for {}.".format(user_id))
+            return
+        return func(update, context, *args, **kwargs)
     return wrapped
 
 
