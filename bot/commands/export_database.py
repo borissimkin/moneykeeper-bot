@@ -17,4 +17,5 @@ def handler(update: Update, context: CallbackContext):
 
 def send_database(telegram_user_id):
     bot.send_document(chat_id=telegram_user_id,
-                      document=open(os.path.join(os.getcwd(), 'database.db'), 'rb'))
+                      document=open(os.path.join(os.getcwd(), 'database.db'), 'rb'),
+                      disable_notification=True)
