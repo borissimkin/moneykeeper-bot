@@ -6,10 +6,10 @@ from bot import config, bot
 from bot.buttons import Buttons
 from bot.conversations.delete_transaction.consumption_deleter import ConsumptionDeleter
 from bot.conversations.delete_transaction.earning_deleter import EarningDeleter
-from bot.conversations.delete_transaction.messages import text_timeout
+from bot.conversations.delete_transaction.messages import text_timeout, text_exit_point
 from bot.conversations.delete_transaction.states import States
 from bot.conversations.delete_transaction.utils import message_has_delete_consumption, get_id_transaction
-from bot.models import session
+from bot.models import session_scope
 from bot.utils import exit_dialog, update_activity, update_username, clear_user_data, add_button_exit, log_handler
 
 
@@ -22,12 +22,11 @@ def entry_point(update: Update, context: CallbackContext):
         context.user_data['transaction_deleter'] = ConsumptionDeleter(telegram_user_id=update.message.from_user.id,
                                                                       transaction_id=get_id_transaction(
                                                                           update.message.text),
-                                                                      session=session)
+                                                                      )
     else:
         context.user_data['transaction_deleter'] = EarningDeleter(telegram_user_id=update.message.from_user.id,
                                                                   transaction_id=get_id_transaction(
-                                                                      update.message.text),
-                                                                  session=session)
+                                                                      update.message.text))
     return to_confirm_delete_transaction(update, context)
 
 
@@ -41,20 +40,20 @@ def handler_timeout(update: Update, context: CallbackContext):
 @clear_user_data
 def exit_point(update: Update, context: CallbackContext):
     bot.send_message(chat_id=update.message.from_user.id,
-                     text=text_timeout(),
+                     text=text_exit_point(),
                      reply_markup=ReplyKeyboardRemove())
     return ConversationHandler.END
 
 
 def to_confirm_delete_transaction(update: Update, context: CallbackContext):
-    if context.user_data['transaction_deleter'].check_exist_transaction():
-        bot.send_message(chat_id=update.message.from_user.id,
-                         text=context.user_data['transaction_deleter'].make_text_delete_transaction(),
-                         reply_markup=ReplyKeyboardMarkup(add_button_exit([[Buttons.confirm]]),
-                                                          resize_keyboard=True),
-                         parse_mode=telegram.ParseMode.HTML)
-
-        return States.TO_CONFIRM_DELETE_TRANSACTION
+    with session_scope() as session:
+        if context.user_data['transaction_deleter'].check_exist_transaction(session):
+            bot.send_message(chat_id=update.message.from_user.id,
+                             text=context.user_data['transaction_deleter'].make_text_delete_transaction(session),
+                             reply_markup=ReplyKeyboardMarkup(add_button_exit([[Buttons.confirm]]),
+                                                              resize_keyboard=True),
+                             parse_mode=telegram.ParseMode.HTML)
+            return States.TO_CONFIRM_DELETE_TRANSACTION
 
     bot.send_message(chat_id=update.message.from_user.id,
                      text=context.user_data['transaction_deleter'].text_error_id_transaction(),
@@ -65,12 +64,13 @@ def to_confirm_delete_transaction(update: Update, context: CallbackContext):
 @exit_dialog
 def handler_confirm_delete_transaction(update: Update, context: CallbackContext):
     if update.message.text == Buttons.confirm:
-        context.user_data['transaction_deleter'].delete_transaction()
+        with session_scope() as session:
+            context.user_data['transaction_deleter'].delete_transaction(session)
         bot.send_message(chat_id=update.message.from_user.id,
                          text=context.user_data['transaction_deleter'].make_text_success_delete_transaction(),
                          reply_markup=ReplyKeyboardRemove(),
                          parse_mode=telegram.ParseMode.HTML)
-        return entry_point(update, context)
+        return ConversationHandler.END
 
 
 delete_transaction = ConversationHandler(

@@ -12,10 +12,10 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 
-class TestearningDeleter(unittest.TestCase):
+class TestEarningDeleter(unittest.TestCase):
     def setUp(self):
         self.deleter = EarningDeleter(1, example_user['telegram_user_id'],
-                                          session)
+                                          )
         Base.metadata.create_all(engine)
 
     def tearDown(self):
@@ -23,7 +23,7 @@ class TestearningDeleter(unittest.TestCase):
 
     def test_get_transaction(self):
         add_example_earning(session)
-        answer = self.deleter.get_transaction()
+        answer = self.deleter.get_transaction(session)
         expected = session.query(Earning).get(1)
         self.assertEqual(answer, expected)
 
@@ -35,11 +35,11 @@ class TestearningDeleter(unittest.TestCase):
         expected = f"Вы уверены, что хотите удалить доход в размере <b>{example_earning['amount_money']} " \
             f"рублей</b> категории <b>{example_category_earning['category']}</b>, созданный в " \
             f"<b>{earning.get_str_time_creation()}</b>?"
-        self.assertEqual(self.deleter.make_text_delete_transaction(), expected)
+        self.assertEqual(self.deleter.make_text_delete_transaction(session), expected)
 
     def test_delete_transaction(self):
         add_example_earning(session)
-        self.deleter.delete_transaction()
+        self.deleter.delete_transaction(session)
         answer = session.query(Earning).get(1)
         expected = None
         self.assertEqual(answer, expected)

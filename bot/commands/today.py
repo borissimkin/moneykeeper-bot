@@ -6,7 +6,7 @@ from telegram.ext import CallbackContext
 
 from bot import bot
 
-from bot.models import User, session, CategoryEarning, CategoryConsumption
+from bot.models import User, session_scope, CategoryEarning, CategoryConsumption
 from bot.statistics.utils import get_earnings_today, get_consumptions_today, total_amount_money
 from bot.utils import update_activity, update_username, to_text_weekday, text_goodbye, log_handler
 
@@ -17,8 +17,9 @@ text_command = 'today'
 @update_username
 @log_handler
 def handler(update: Update, context: CallbackContext):
-    user = User.get_user_by_telegram_user_id(session, update.message.from_user.id)
-    text = make_text_today(session, datetime.datetime.now(), user)
+    with session_scope() as session:
+        user = User.get_user_by_telegram_user_id(session, update.message.from_user.id)
+        text = make_text_today(session, datetime.datetime.now(), user)
     bot.send_message(chat_id=update.message.from_user.id,
                      text=text,
                      parse_mode=telegram.ParseMode.HTML,

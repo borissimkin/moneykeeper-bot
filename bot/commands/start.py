@@ -5,7 +5,7 @@ from telegram.ext import CallbackContext
 
 from bot import bot
 from bot.commands.help import make_text_help
-from bot.models import session, User, CategoryEarning, CategoryConsumption
+from bot.models import User, CategoryEarning, CategoryConsumption, session_scope
 from bot.utils import log_handler
 
 
@@ -14,10 +14,11 @@ text_command = 'start'
 
 @log_handler
 def handler(update: Update, context: CallbackContext):
-    if not check_user_in_db(update.message.from_user.id, session):
-        add_user_in_db(update, session)
-        create_default_categories_for_earning_and_consumption(update.message.from_user.id)
-        send_welcome_text(update.message.from_user.id)
+    with session_scope() as session:
+        if not check_user_in_db(update.message.from_user.id, session):
+            add_user_in_db(update, session)
+            create_default_categories_for_earning_and_consumption(update.message.from_user.id)
+            send_welcome_text(update.message.from_user.id)
 
 
 def add_user_in_db(update, session):
@@ -29,9 +30,10 @@ def add_user_in_db(update, session):
 
 
 def create_default_categories_for_earning_and_consumption(telegram_user_id):
-    user = session.query(User).filter(User.telegram_user_id == telegram_user_id).first()
-    CategoryEarning.create_default_categories(session, user.id)
-    CategoryConsumption.create_default_categories(session, user.id)
+    with session_scope() as session:
+        user = session.query(User).filter(User.telegram_user_id == telegram_user_id).first()
+        CategoryEarning.create_default_categories(session, user.id)
+        CategoryConsumption.create_default_categories(session, user.id)
 
 
 def check_user_in_db(user_id, session):

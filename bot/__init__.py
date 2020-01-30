@@ -72,3 +72,16 @@ updater = Updater(token=config['telegram']['token'], use_context=True)
 bot = MyBot(token=config['telegram']['token'])
 dispatcher = updater.dispatcher
 jobs = updater.job_queue
+
+#
+# def custom_handler(self, *args, **kwargs):
+#     try:
+#         ret = self._handle_update(*args, **kwargs)
+#     finally:
+#         session.remove()
+#     return ret
+#
+#
+# Handler._handle_update = Handler.handle_update
+# Handler.handle_update = custom_handler
+

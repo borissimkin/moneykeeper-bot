@@ -15,7 +15,7 @@ session = Session()
 class TestConsumptionDeleter(unittest.TestCase):
     def setUp(self):
         self.deleter = ConsumptionDeleter(1, example_user['telegram_user_id'],
-                                          session)
+                                          )
         Base.metadata.create_all(engine)
 
     def tearDown(self):
@@ -23,7 +23,7 @@ class TestConsumptionDeleter(unittest.TestCase):
 
     def test_get_transaction(self):
         add_example_consumption(session)
-        answer = self.deleter.get_transaction()
+        answer = self.deleter.get_transaction(session)
         expected = session.query(Consumption).get(1)
         self.assertEqual(answer, expected)
 
@@ -35,11 +35,11 @@ class TestConsumptionDeleter(unittest.TestCase):
         expected = f"Вы уверены, что хотите удалить расход в размере <b>{example_consumption['amount_money']} " \
             f"рублей</b> категории <b>{example_category_consumption['category']}</b>, созданный в " \
             f"<b>{consumption.get_str_time_creation()}</b>?"
-        self.assertEqual(self.deleter.make_text_delete_transaction(), expected)
+        self.assertEqual(self.deleter.make_text_delete_transaction(session), expected)
 
     def test_delete_transaction(self):
         add_example_consumption(session)
-        self.deleter.delete_transaction()
+        self.deleter.delete_transaction(session)
         answer = session.query(Consumption).get(1)
         expected = None
         self.assertEqual(answer, expected)

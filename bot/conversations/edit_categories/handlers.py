@@ -12,7 +12,7 @@ from bot.conversations.edit_categories.messages import text_choose_earning_or_co
     text_edit_category, text_write_edit_category, text_confirm_edit_category
 from bot.conversations.edit_categories.states import States
 from bot.keyboards import keyboard_confirm, make_buttons_for_choose_category
-from bot.models import session
+from bot.models import session_scope
 from bot.utils import exit_dialog, update_username, update_activity, clear_user_data, back, add_buttons_exit_and_back, \
     log_handler
 
@@ -49,10 +49,11 @@ def to_choose_earning_or_consumption(update: Update, context: CallbackContext):
 
 def to_menu_manage_categories(update, context):
     context.user_data['back_func'] = to_choose_earning_or_consumption
-    text = TextMenuManageCategories.make_text_menu_manage_categories(session, update.message.from_user.id,
-                                                                     context.user_data['category_manager'])
-    keyboard = make_keyboard_menu_manage_categories(session, update.message.from_user.id,
-                                                    context.user_data['category_manager'])
+    with session_scope() as session:
+        text = TextMenuManageCategories.make_text_menu_manage_categories(session, update.message.from_user.id,
+                                                                         context.user_data['category_manager'])
+        keyboard = make_keyboard_menu_manage_categories(session, update.message.from_user.id,
+                                                        context.user_data['category_manager'])
     bot.send_message(chat_id=update.message.from_user.id,
                      text=text,
                      reply_markup=keyboard,
@@ -112,10 +113,11 @@ def handler_add_category(update: Update, context: CallbackContext):
 @back
 def handler_confirm_add_category(update: Update, context: CallbackContext):
     if update.message.text == Buttons.confirm:
-        new_category = context.user_data['add_category']
-        context.user_data['category_manager'].add_category_in_db(session,
-                                                                 new_category,
-                                                                 update.message.from_user.id)
+        with session_scope() as session:
+            new_category = context.user_data['add_category']
+            context.user_data['category_manager'].add_category_in_db(session,
+                                                                     new_category,
+                                                                     update.message.from_user.id)
         bot.send_message(chat_id=update.message.from_user.id,
                          text=context.user_data['category_manager'].text_success_add_category(new_category),
                          parse_mode=telegram.ParseMode.HTML,
@@ -128,10 +130,11 @@ def to_delete_category(update: Update, context: CallbackContext):
     bot.send_message(chat_id=update.message.from_user.id,
                      text=text_warning_delete_category(),
                      parse_mode=telegram.ParseMode.HTML)
-    categories = context.user_data['category_manager'].get_all_categories(session,
-                                                                          update.message.from_user.id)
-    buttons = make_buttons_for_choose_category(config['buttons_per_row'],
-                                               categories)
+    with session_scope() as session:
+        categories = context.user_data['category_manager'].get_all_categories(session,
+                                                                              update.message.from_user.id)
+        buttons = make_buttons_for_choose_category(config['buttons_per_row'],
+                                                   categories)
     bot.send_message(chat_id=update.message.from_user.id,
                      text=text_delete_category(session, update.message.from_user.id,
                                                context.user_data['category_manager']),
@@ -145,8 +148,9 @@ def to_delete_category(update: Update, context: CallbackContext):
 @back
 @exit_dialog
 def handler_delete_category(update: Update, context: CallbackContext):
-    categories = context.user_data['category_manager'].get_all_categories_by_text(session,
-                                                                                  update.message.from_user.id)
+    with session_scope() as session:
+        categories = context.user_data['category_manager'].get_all_categories_by_text(session,
+                                                                                      update.message.from_user.id)
     answer = update.message.text
     if answer in categories:
         context.user_data['delete_category'] = answer
@@ -168,10 +172,11 @@ def to_confirm_delete_category(update: Update, context: CallbackContext):
 
 def to_edit_category(update: Update, context: CallbackContext):
     context.user_data['back_func'] = to_menu_manage_categories
-    categories = context.user_data['category_manager'].get_all_categories(session,
-                                                                          update.message.from_user.id)
-    buttons = make_buttons_for_choose_category(config['buttons_per_row'],
-                                               categories)
+    with session_scope() as session:
+        categories = context.user_data['category_manager'].get_all_categories(session,
+                                                                              update.message.from_user.id)
+        buttons = make_buttons_for_choose_category(config['buttons_per_row'],
+                                                   categories)
     bot.send_message(chat_id=update.message.from_user.id,
                      text=text_edit_category(),
                      reply_markup=ReplyKeyboardMarkup(add_buttons_exit_and_back(buttons),
@@ -183,8 +188,9 @@ def to_edit_category(update: Update, context: CallbackContext):
 @back
 @exit_dialog
 def handler_edit_category(update: Update, context: CallbackContext):
-    categories = context.user_data['category_manager'].get_all_categories_by_text(session,
-                                                                                  update.message.from_user.id)
+    with session_scope() as session:
+        categories = context.user_data['category_manager'].get_all_categories_by_text(session,
+                                                                                      update.message.from_user.id)
     answer = update.message.text
     if answer in categories:
         context.user_data['old_edit_category'] = answer
@@ -223,9 +229,10 @@ def to_confirm_edit_category(update: Update, context: CallbackContext):
 @back
 def handler_confirm_edit_category(update: Update, context: CallbackContext):
     if update.message.text == Buttons.confirm:
-        context.user_data['category_manager'].edit_category_in_db(session, update.message.from_user.id,
-                                                                  context.user_data['old_edit_category'],
-                                                                  context.user_data['new_edit_category'])
+        with session_scope() as session:
+            context.user_data['category_manager'].edit_category_in_db(session, update.message.from_user.id,
+                                                                      context.user_data['old_edit_category'],
+                                                                      context.user_data['new_edit_category'])
         bot.send_message(chat_id=update.message.from_user.id,
                          text=context.user_data['category_manager'].text_success_edit_category(
                              context.user_data['old_edit_category'],
@@ -239,9 +246,10 @@ def handler_confirm_edit_category(update: Update, context: CallbackContext):
 @back
 def handler_confirm_delete_category(update: Update, context: CallbackContext):
     if update.message.text == Buttons.confirm:
-        context.user_data['category_manager'].delete_category_in_db(session,
-                                                                    context.user_data['delete_category'],
-                                                                    update.message.from_user.id)
+        with session_scope() as session:
+            context.user_data['category_manager'].delete_category_in_db(session,
+                                                                        context.user_data['delete_category'],
+                                                                        update.message.from_user.id)
         bot.send_message(chat_id=update.message.from_user.id,
                          text=context.user_data['category_manager'].text_success_delete(
                              context.user_data['delete_category']),
