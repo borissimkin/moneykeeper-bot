@@ -8,14 +8,15 @@ import sqlalchemy
 from bot import config, logger
 from bot.buttons import Buttons
 from bot.exceptions import BackIsNotDefined, ExitIsNotDefined
-from bot.models import session, User
+from bot.models import User, session_scope
 
 
 def update_activity(func):
     def wrapped(update, context, *args, **kwargs):
-        user = session.query(User).filter(
-            User.telegram_user_id == update.message.from_user.id).first()
-        user.update_activity(session, datetime.datetime.now())
+        with session_scope() as session:
+            user = session.query(User).filter(
+                User.telegram_user_id == update.message.from_user.id).first()
+            user.update_activity(session, datetime.datetime.now())
         return func(update, context, *args, **kwargs)
     return wrapped
 
@@ -23,9 +24,13 @@ def update_activity(func):
 def update_username(func):
     def wrapped(update, context, *args, **kwargs):
         telegram_user = update.message.from_user
-        user = session.query(User).filter(User.telegram_user_id == update.message.from_user.id).first()
-        username = getattr(telegram_user, 'username', sqlalchemy.null())
-        user.update_username(session, username)
+        with session_scope() as session:
+            try:
+                user = session.query(User).filter(User.telegram_user_id == update.message.from_user.id).first()
+            except Exception as e:
+                print(e)
+            username = getattr(telegram_user, 'username', sqlalchemy.null())
+            user.update_username(session, username)
         return func(update, context, *args, **kwargs)
     return wrapped
 

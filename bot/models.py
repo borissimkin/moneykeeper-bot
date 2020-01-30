@@ -5,11 +5,26 @@ from sqlalchemy import Integer, Column, String, ForeignKey, create_engine, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+from contextlib import contextmanager
+
 engine = create_engine('sqlite:///database.db', echo=False)
 Base = declarative_base()
 
 Session = sessionmaker(bind=engine)
-session = Session()
+
+
+@contextmanager
+def session_scope():
+    """Provide a transactional scope around a series of operations."""
+    session = Session()
+    try:
+        yield session
+        session.commit()
+    except:
+        session.rollback()
+        raise
+    finally:
+        session.close()
 
 
 class User(Base):
@@ -98,7 +113,7 @@ class CategoryEarning(Base):
 
 
 class Earning(Base):
-    __tablename__ = 'add_earning'
+    __tablename__ = 'earning'
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))
@@ -175,7 +190,7 @@ class CategoryConsumption(Base):
 
 
 class Consumption(Base):
-    __tablename__ = 'add_consumption'
+    __tablename__ = 'consumption'
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))

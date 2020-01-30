@@ -1,4 +1,4 @@
-from bot.models import Earning, CategoryEarning, CategoryConsumption, session
+from bot.models import Earning, CategoryEarning, CategoryConsumption
 
 
 def make_text_earning(session, earning):
