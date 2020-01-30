@@ -9,7 +9,7 @@ from bot.conversations.add_consumption.messages import text_to_choose_category, 
      text_success_add_consumption, text_error_enter_amount_money, text_to_write_money
 from bot.messages import text_confirm_add_transaction
 from bot.models import CategoryConsumption, session_scope, User, Consumption
-from bot.utils import exit_dialog, back, update_username, update_activity, add_button_cancel, add_buttons_exit_and_back, \
+from bot.utils import exit_dialog, back, update_username, update_activity, add_buttons_exit_and_back, \
     clear_user_data, log_handler
 from .states import States
 
@@ -48,20 +48,15 @@ def handler_to_choose_category(update: Update, context: CallbackContext):
         user = session.query(User).filter(User.telegram_user_id == update.message.from_user.id).first()
         right_answers = CategoryConsumption.get_all_categories_by_text(session, user.id)
     if text in right_answers:
-        context.user_data['category_consumption'] = text
-        return to_confirm_add_consumption(update, context)
-    else:
-        ...  # предложить создать категорию?
-
-
-def to_confirm_add_consumption(update: Update, context: CallbackContext):
-    context.user_data['back_func'] = to_choose_category
-    bot.send_message(chat_id=update.message.from_user.id,
-                     text=text_confirm_add_transaction(context.user_data['amount_money_consumption'],
-                                                       context.user_data['category_consumption']),
-                     reply_markup=keyboard_confirm,
-                     parse_mode=telegram.ParseMode.HTML)
-    return States.TO_CONFIRM_ADD_CONSUMPTION
+        with session_scope() as session:
+            add_consumption_in_db(session,
+                                  update.message.from_user.id,
+                                  context.user_data['amount_money_consumption'],
+                                  text)
+        bot.send_message(chat_id=update.message.from_user.id,
+                         text=text_success_add_consumption(),
+                         reply_markup=ReplyKeyboardRemove())
+        return ConversationHandler.END
 
 
 def to_write_money(update, context):
@@ -108,21 +103,6 @@ def send_message_to_choose_category(telegram_user_id, amount_money):
                      reply_markup=keyboard)
 
 
-@back
-@exit_dialog
-def handler_confirm_add_consumption(update: Update, context: CallbackContext):
-    if update.message.text == Buttons.confirm:
-        with session_scope() as session:
-            add_consumption_in_db(session,
-                                  update.message.from_user.id,
-                                  context.user_data['amount_money_consumption'],
-                                  context.user_data['category_consumption'])
-        bot.send_message(chat_id=update.message.from_user.id,
-                         text=text_success_add_consumption(),
-                         reply_markup=ReplyKeyboardRemove())
-        return ConversationHandler.END
-
-
 def add_consumption_in_db(session, telegram_user_id, amount_money, category_text):
     user = session.query(User).filter(User.telegram_user_id == telegram_user_id).first()
     category = session.query(CategoryConsumption).filter(CategoryConsumption.category == category_text,
@@ -148,11 +128,6 @@ add_consumption = ConversationHandler(
         States.TO_WRITE_AMOUNT_MONEY: [MessageHandler(Filters.text,
                                                       handler_write_money,
                                                       pass_user_data=True)],
-
-        States.TO_CONFIRM_ADD_CONSUMPTION: [MessageHandler(Filters.text,
-                                                           handler_confirm_add_consumption,
-                                                           pass_user_data=True)],
-
 
     },
     conversation_timeout=config['conversations']['timeout'],

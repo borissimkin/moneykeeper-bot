@@ -56,18 +56,15 @@ def handler_to_choose_category(update: Update, context: CallbackContext):
         user = session.query(User).filter(User.telegram_user_id == update.message.from_user.id).first()
         categories = CategoryEarning.get_all_categories_by_text(session, user.id)
     if text in categories:
-        context.user_data['category_earning'] = text
-        return to_confirm_add_earning(update, context)
-
-
-def to_confirm_add_earning(update: Update, context: CallbackContext):
-    context.user_data['back_func'] = to_choose_category
-    bot.send_message(chat_id=update.message.from_user.id,
-                     text=text_confirm_add_transaction(context.user_data['amount_money_earning'],
-                                                       context.user_data['category_earning']),
-                     reply_markup=keyboard_confirm,
-                     parse_mode=telegram.ParseMode.HTML)
-    return States.TO_CONFIRM_ADD_EARNING
+        with session_scope() as session:
+            add_earning_in_db(session,
+                              update.message.from_user.id,
+                              context.user_data['amount_money_earning'],
+                              text)
+        bot.send_message(chat_id=update.message.from_user.id,
+                         text=text_success_add_earning(),
+                         reply_markup=ReplyKeyboardRemove())
+        return ConversationHandler.END
 
 
 def to_choose_category(update: Update, context: CallbackContext):
@@ -107,21 +104,6 @@ def send_message_error_enter_amount_money(telegram_user_id):
                      parse_mode=telegram.ParseMode.HTML)
 
 
-@exit_dialog
-@back
-def handler_confirm_add_earning(update: Update, context: CallbackContext):
-    if update.message.text == Buttons.confirm:
-        with session_scope() as session:
-            add_earning_in_db(session,
-                              update.message.from_user.id,
-                              context.user_data['amount_money_earning'],
-                              context.user_data['category_earning'])
-        bot.send_message(chat_id=update.message.from_user.id,
-                         text=text_success_add_earning(),
-                         reply_markup=ReplyKeyboardRemove())
-        return ConversationHandler.END
-
-
 def add_earning_in_db(session, telegram_user_id, amount_money, category_text):
     user = session.query(User).filter(User.telegram_user_id == telegram_user_id).first()
     category = session.query(CategoryEarning).filter(CategoryEarning.category == category_text).first()
@@ -146,10 +128,6 @@ add_earning = ConversationHandler(
         States.TO_WRITE_AMOUNT_MONEY: [MessageHandler(Filters.text,
                                                       handler_write_money,
                                                       pass_user_data=True)],
-
-        States.TO_CONFIRM_ADD_EARNING: [MessageHandler(Filters.text,
-                                                       handler_confirm_add_earning,
-                                                       pass_user_data=True)],
 
 
     },
