@@ -1,3 +1,5 @@
+import datetime
+
 import telegram
 from telegram import Update, ReplyKeyboardRemove, ReplyKeyboardMarkup
 from telegram.ext import ConversationHandler, MessageHandler, Filters, CallbackContext, CommandHandler
@@ -109,7 +111,8 @@ def add_consumption_in_db(session, telegram_user_id, amount_money, category_text
                                                          CategoryConsumption.user_id == user.id).first()
     session.add(Consumption(user_id=user.id,
                             category_id=category.id,
-                            amount_money=amount_money))
+                            amount_money=amount_money,
+                            time_creation=datetime.datetime.now()))
     session.commit()
 
 

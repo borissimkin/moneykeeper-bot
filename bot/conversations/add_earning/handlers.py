@@ -1,3 +1,5 @@
+import datetime
+
 import telegram
 from telegram import Update, ReplyKeyboardRemove, ReplyKeyboardMarkup
 from telegram.ext import MessageHandler, ConversationHandler, Filters, CallbackContext, CommandHandler
@@ -109,7 +111,8 @@ def add_earning_in_db(session, telegram_user_id, amount_money, category_text):
     category = session.query(CategoryEarning).filter(CategoryEarning.category == category_text).first()
     session.add(Earning(user_id=user.id,
                         category_id=category.id,
-                        amount_money=amount_money))
+                        amount_money=amount_money,
+                        time_creation=datetime.datetime.now()))
     session.commit()
 
 
