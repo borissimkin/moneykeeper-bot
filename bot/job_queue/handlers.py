@@ -36,7 +36,7 @@ def job_backup_database(context: CallbackContext):
         admin_users = session.query(User).filter(
             User.telegram_user_id.in_(config['admin_list'])
         ).all()
-    for user in admin_users:
-        send_database(user.telegram_user_id)
+        for user in admin_users:
+            send_database(user.telegram_user_id)
 
 
