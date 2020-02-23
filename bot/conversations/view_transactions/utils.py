@@ -21,3 +21,6 @@ def make_list_consumptions(session, telegram_user_id):
     consumptions = session.query(Consumption).filter(Consumption.user_id == user.id).\
         order_by(Consumption.time_creation.desc()).all()
     return consumptions
+
+
+

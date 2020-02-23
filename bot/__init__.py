@@ -2,10 +2,13 @@ import inspect
 import logging.config
 import logging
 import os
+from contextlib import contextmanager
 
 import telegram
 import yaml
-from telegram.ext import Updater
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, scoped_session
+from telegram.ext import Updater, Handler
 
 config_path = os.path.abspath(os.path.join(os.getcwd(), 'cfg', 'config.yml'))
 logger = logging.getLogger('mkbot')
@@ -19,6 +22,19 @@ try:
 
 except FileNotFoundError as e:
     raise e
+
+
+@contextmanager
+def session_context():
+    try:
+        yield session
+    finally:
+        session.remove()
+
+
+engine = create_engine('sqlite:///database.db', echo=False)
+Session = sessionmaker(bind=engine)
+session = scoped_session(Session)
 
 
 class MyBot(telegram.Bot):
@@ -73,15 +89,15 @@ bot = MyBot(token=config['telegram']['token'])
 dispatcher = updater.dispatcher
 jobs = updater.job_queue
 
-#
-# def custom_handler(self, *args, **kwargs):
-#     try:
-#         ret = self._handle_update(*args, **kwargs)
-#     finally:
-#         session.remove()
-#     return ret
-#
-#
-# Handler._handle_update = Handler.handle_update
-# Handler.handle_update = custom_handler
+
+def custom_handler(self, *args, **kwargs):
+    try:
+        ret = self._handle_update(*args, **kwargs)
+    finally:
+        session.remove()
+    return ret
+
+
+Handler._handle_update = Handler.handle_update
+Handler.handle_update = custom_handler
 
