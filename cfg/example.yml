@@ -6,7 +6,7 @@ buttons_per_row: 3
 conversations:
   timeout: 1200
 
-view_transactons:
+view_transactions:
   count_transactions_in_list: 10
 
 jobs:
