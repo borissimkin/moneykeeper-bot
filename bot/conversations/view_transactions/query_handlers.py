@@ -32,23 +32,22 @@ def handler_view_transactions(update: Update, context: CallbackContext):
     request = query.data
     text = None
     user_data = context.user_data
-    with session_scope() as session:
-        if request == '{}all'.format(prefix_query):
-            transactions = make_list_transactions(session, update.effective_user.id)
-            user_data['transactions_controller'] = TransactionsController(transactions)
-            text = make_text_list_transactions(session, user_data['transactions_controller'].get_current_part())
-        elif request == '{}earnings'.format(prefix_query):
-            transactions = make_list_earnings(session, update.effective_user.id)
-            user_data['transactions_controller'] = TransactionsController(transactions)
-            text = make_text_list_transactions(session, user_data['transactions_controller'].get_current_part())
-        elif request == '{}consumptions'.format(prefix_query):
-            transactions = make_list_consumptions(session, update.effective_user.id)
-            user_data['transactions_controller'] = TransactionsController(transactions)
-            text = make_text_list_transactions(session, user_data['transactions_controller'].get_current_part())
-        elif request == '{}next'.format(prefix_query):
-            text = make_text_list_transactions(session, user_data['transactions_controller'].next())
-        elif request == '{}previous'.format(prefix_query):
-            text = make_text_list_transactions(session, user_data['transactions_controller'].previous())
+    if request == '{}all'.format(prefix_query):
+        transactions = make_list_transactions(session, update.effective_user.id)
+        user_data['transactions_controller'] = TransactionsController(transactions)
+        text = make_text_list_transactions(session, user_data['transactions_controller'].get_current_part())
+    elif request == '{}earnings'.format(prefix_query):
+        transactions = make_list_earnings(session, update.effective_user.id)
+        user_data['transactions_controller'] = TransactionsController(transactions)
+        text = make_text_list_transactions(session, user_data['transactions_controller'].get_current_part())
+    elif request == '{}consumptions'.format(prefix_query):
+        transactions = make_list_consumptions(session, update.effective_user.id)
+        user_data['transactions_controller'] = TransactionsController(transactions)
+        text = make_text_list_transactions(session, user_data['transactions_controller'].get_current_part())
+    elif request == '{}next'.format(prefix_query):
+        text = make_text_list_transactions(session, user_data['transactions_controller'].next())
+    elif request == '{}previous'.format(prefix_query):
+        text = make_text_list_transactions(session, user_data['transactions_controller'].previous())
     query.edit_message_text(text=text,
                             reply_markup=get_keyboard(context.user_data['transactions_controller']))
 
