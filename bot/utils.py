@@ -4,6 +4,7 @@ from functools import wraps
 
 import pymorphy2
 import sqlalchemy
+import os
 
 from bot import config, logger
 from bot.buttons import Buttons
@@ -25,10 +26,7 @@ def update_username(func):
     def wrapped(update, context, *args, **kwargs):
         telegram_user = update.message.from_user
         with session_scope() as session:
-            try:
-                user = session.query(User).filter(User.telegram_user_id == update.message.from_user.id).first()
-            except Exception as e:
-                print(e)
+            user = session.query(User).filter(User.telegram_user_id == update.message.from_user.id).first()
             username = getattr(telegram_user, 'username', sqlalchemy.null())
             user.update_username(session, username)
         return func(update, context, *args, **kwargs)
@@ -95,6 +93,22 @@ def log_job_queue(func):
                                                           func.__module__))
         return func(*args, **kwargs)
     return wrapped
+
+
+def delete_figure(func):
+    @functools.wraps(func)
+    def wrapped(*args, **kwargs):
+        ret = func(*args, **kwargs)
+        delete_file()
+        return ret
+    return wrapped
+
+
+def delete_file(filename='figure.jpg'):
+    try:
+        os.remove('figure.jpg')
+    except FileNotFoundError as e:
+        logger.error(e)
 
 
 def clear_user_data(f):

@@ -1,7 +1,7 @@
 import datetime
 
 from bot.models import User, Earning, Consumption
-from bot.statistics.utils import total_amount_money
+from bot.conversations.statistics.utils import total_amount_money
 from bot.utils import ruble_declension
 
 
