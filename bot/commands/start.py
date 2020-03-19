@@ -3,7 +3,7 @@ import telegram
 from telegram import Update
 from telegram.ext import CallbackContext
 
-from bot import bot
+from bot import bot, session
 from bot.commands.help import make_text_help
 from bot.models import User, CategoryEarning, CategoryConsumption, session_scope
 from bot.utils import log_handler
@@ -14,11 +14,10 @@ text_command = 'start'
 
 @log_handler
 def handler(update: Update, context: CallbackContext):
-    with session_scope() as session:
-        if not check_user_in_db(update.message.from_user.id, session):
-            add_user_in_db(update, session)
-            create_default_categories_for_earning_and_consumption(update.message.from_user.id)
-            send_welcome_text(update.message.from_user.id)
+    if not check_user_in_db(update.message.from_user.id, session):
+        add_user_in_db(update, session)
+        create_default_categories_for_earning_and_consumption(update.message.from_user.id)
+        send_welcome_text(update.message.from_user.id)
 
 
 def add_user_in_db(update, session):
@@ -37,8 +36,8 @@ def create_default_categories_for_earning_and_consumption(telegram_user_id):
 
 
 def check_user_in_db(user_id, session):
-    user = session.query(User.telegram_user_id == user_id).first()
-    return True if user else False
+    users = session.query(User).filter(User.telegram_user_id == user_id).all()
+    return True if users else False
 
 
 def send_welcome_text(telegram_user_id):
