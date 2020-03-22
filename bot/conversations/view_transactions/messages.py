@@ -8,10 +8,7 @@ def make_text_earning(session, earning):
 
 
 def make_text_consumption(session, consumption):
-    try:
-        category = session.query(CategoryConsumption).get(consumption.category_id)
-    except Exception as e:
-        print(e)
+    category = session.query(CategoryConsumption).get(consumption.category_id)
     return f'Расход {consumption.amount_money} руб. {category.category} {consumption.get_str_time_creation()} - ' \
         f'/del_c{consumption.id}\n'
 

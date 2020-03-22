@@ -35,12 +35,3 @@ class TransactionsController:
 
     def get_current_part(self):
         return self.transactions[self.first_index_part:self.last_index_part]
-
-    def part_in_begin(self):
-        ...
-
-    def part_in_end(self):
-        ...
-
-    def part_in_middle(self):
-        ...

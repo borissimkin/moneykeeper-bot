@@ -4,6 +4,7 @@ from functools import wraps
 
 import pymorphy2
 import sqlalchemy
+import os
 
 from bot import config, logger
 from bot.buttons import Buttons
@@ -25,10 +26,7 @@ def update_username(func):
     def wrapped(update, context, *args, **kwargs):
         telegram_user = update.message.from_user
         with session_scope() as session:
-            try:
-                user = session.query(User).filter(User.telegram_user_id == update.message.from_user.id).first()
-            except Exception as e:
-                print(e)
+            user = session.query(User).filter(User.telegram_user_id == update.message.from_user.id).first()
             username = getattr(telegram_user, 'username', sqlalchemy.null())
             user.update_username(session, username)
         return func(update, context, *args, **kwargs)
