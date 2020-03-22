@@ -95,22 +95,6 @@ def log_job_queue(func):
     return wrapped
 
 
-def delete_figure(func):
-    @functools.wraps(func)
-    def wrapped(*args, **kwargs):
-        ret = func(*args, **kwargs)
-        delete_file()
-        return ret
-    return wrapped
-
-
-def delete_file(filename='figure.jpg'):
-    try:
-        os.remove('figure.jpg')
-    except FileNotFoundError as e:
-        logger.error(e)
-
-
 def clear_user_data(f):
     def wrapped(update, context, *args, **kwargs):
         context.user_data.clear()
