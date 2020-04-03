@@ -12,6 +12,7 @@ from telegram.ext import Updater, Handler
 
 config_path = os.path.abspath(os.path.join(os.getcwd(), 'cfg', 'config.yml'))
 logger = logging.getLogger('mkbot')
+os.makedirs(os.path.join(os.getcwd(), 'Logs'), exist_ok=True)
 
 try:
     with open(config_path, 'r') as f:
