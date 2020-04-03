@@ -9,7 +9,7 @@ from bot.conversations.statistics.graph_controller import GraphController
 from bot.conversations.statistics.graphs import make_pie_graph
 from bot.conversations.statistics.keyboards import reply_main_keyboard, reply_keyboard_choose_time_period
 from bot.conversations.statistics.type_transacation_graph import TypeTransaction
-from bot.conversations.statistics.utils import get_consumptions_for_graph_user, get_lifetime_user, get_yesterday, \
+from bot.conversations.statistics.utils import get_lifetime_user, get_yesterday, \
     get_today, get_current_week, \
     get_transactions_for_graph_by_type, get_current_month
 from bot.models import User
@@ -31,8 +31,8 @@ def entry_point_statistics(update: Update, context: CallbackContext):
 
 
 def make_default_graph(user):
-    data, labels = get_consumptions_for_graph_user(session, user)
     time_period = get_lifetime_user(user, now=datetime.datetime.now())
+    data, labels = get_transactions_for_graph_by_type(session, user, TypeTransaction.CONSUMPTION, time_period)
     path_to_graph = make_pie_graph(data, labels, time_period,
                                    TypeTransaction.CONSUMPTION)
     return path_to_graph
@@ -87,7 +87,7 @@ def handler_statistics(update: Update, context: CallbackContext):
 def handler_button_choose_time_period(update, context, user):
     graph_controller = context.user_data['statistics']
     type_transactions = graph_controller.type_transactions
-    data, labels = get_transactions_for_graph_by_type(session, user, type_transactions)
+    data, labels = get_transactions_for_graph_by_type(session, user, type_transactions, graph_controller.time_period)
     path_to_graph = make_pie_graph(data, labels, graph_controller.time_period,
                                    graph_controller.type_transactions)
     media_object = InputMediaPhoto(open(path_to_graph, 'rb'))
@@ -101,7 +101,7 @@ def handler_button_choose_time_period(update, context, user):
 def handler_button_choose_type_transactions(update, context, user):
     graph_controller = context.user_data['statistics']
     type_transactions = graph_controller.type_transactions
-    data, labels = get_transactions_for_graph_by_type(session, user, type_transactions)
+    data, labels = get_transactions_for_graph_by_type(session, user, type_transactions, graph_controller.time_period)
     path_to_graph = make_pie_graph(data, labels, graph_controller.time_period,
                                    graph_controller.type_transactions)
     graph_controller.update_path_to_current_graph(path_to_graph)
