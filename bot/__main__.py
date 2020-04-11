@@ -9,6 +9,7 @@ from bot.commands import export_database
 from bot.commands import help
 from bot.conversations.add_consumption.handlers import add_consumption
 from bot.conversations.add_earning.handlers import add_earning
+from bot.conversations.add_transaction.handlers import add_transaction
 from bot.conversations.edit_categories.handlers import edit_categories
 from bot.conversations.delete_transaction.handlers import delete_transaction
 from bot.conversations.statistics import prefix_query_statistics
@@ -37,6 +38,8 @@ def start_handlers():
     dispatcher.add_handler(add_earning)
 
     dispatcher.add_handler(edit_categories)
+
+    dispatcher.add_handler(add_transaction)
 
     dispatcher.add_handler(delete_transaction)
 
