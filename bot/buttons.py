@@ -16,4 +16,6 @@ class Buttons:
     earnings = 'Доходы'
     consumptions = 'Расходы'
     all = 'Все'
+    today = 'Сегодня'
+    yesterday = 'Вчера'
 
