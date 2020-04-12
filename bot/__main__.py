@@ -7,6 +7,7 @@ from bot.commands import start
 from bot.commands import today
 from bot.commands import export_database
 from bot.commands import help
+from bot.commands.export_xls import handler_export
 from bot.conversations.add_consumption.handlers import add_consumption
 from bot.conversations.add_earning.handlers import add_earning
 from bot.conversations.add_transaction.handlers import add_transaction
@@ -26,6 +27,8 @@ def start_handlers():
     dispatcher.add_handler(CommandHandler('view_transactions', view_transactions))
 
     dispatcher.add_handler(CommandHandler('statistics', entry_point_statistics))
+
+    dispatcher.add_handler(CommandHandler('export', handler_export))
 
     dispatcher.add_handler(CommandHandler(today.text_command, today.handler))
 
