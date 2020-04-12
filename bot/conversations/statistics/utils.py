@@ -147,3 +147,7 @@ def time_period_has_dash(time_period):
     except ValueError:
         return False
     return True
+
+
+def take_percentage_number(number, percentage):
+    return (number / 100) * percentage

@@ -112,6 +112,11 @@ def add_buttons_exit_and_back(buttons):
     return buttons
 
 
+def add_button_back(buttons):
+    buttons.append([Buttons.back])
+    return buttons
+
+
 def add_button_exit(buttons):
     buttons.append([Buttons.exit])
     return buttons

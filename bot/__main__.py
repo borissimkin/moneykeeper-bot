@@ -13,6 +13,7 @@ from bot.conversations.add_earning.handlers import add_earning
 from bot.conversations.add_transaction.handlers import add_transaction
 from bot.conversations.edit_categories.handlers import edit_categories
 from bot.conversations.delete_transaction.handlers import delete_transaction
+from bot.conversations.limits.handlers import limits_conversation_handler
 from bot.conversations.statistics import prefix_query_statistics
 from bot.conversations.statistics.enter_time_period.handlers import time_period
 from bot.conversations.statistics.handlers import entry_point_statistics, handler_statistics
@@ -37,6 +38,8 @@ def start_handlers():
     dispatcher.add_handler(CommandHandler(help.text_command, help.handler))
 
     dispatcher.add_handler(add_consumption)
+
+    dispatcher.add_handler(limits_conversation_handler)
 
     dispatcher.add_handler(add_earning)
 

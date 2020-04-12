@@ -1,6 +1,6 @@
 import datetime
 
-from bot.models import User, CategoryEarning, Earning, CategoryConsumption, Consumption
+from bot.models import User, CategoryEarning, Earning, CategoryConsumption, Consumption, Limit
 
 now = datetime.datetime(2020, 1, 10, 12, 30, 00)
 example_user = {'id': 1,
@@ -11,6 +11,12 @@ example_user = {'id': 1,
                 'last_activity': now,
                 'date_registration': now,
                 }
+
+example_limit = {'id': 1,
+                 'user_id': 1,
+                 'type_limit': 0,
+                 'category_id': 1,
+                 'amount_money': 100}
 
 example_category_earning = {'id': 1,
                             'category': 'Работа',
@@ -43,6 +49,14 @@ def add_example_user(session):
                      last_name=example_user['last_name'],
                      last_activity=example_user['last_activity'],
                      date_registration=example_user['date_registration']))
+    session.commit()
+
+
+def add_example_limit(session):
+    session.add(Limit(user_id=example_limit['id'],
+                      type_limit=example_limit['type_limit'],
+                      category_id=example_limit['category_id'],
+                      amount_money=example_limit['amount_money']))
     session.commit()
 
 
