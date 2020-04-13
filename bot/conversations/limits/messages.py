@@ -40,6 +40,10 @@ def text_choose_limit_to_edit():
     return 'Выберите лимит для изменения'
 
 
+def text_choose_limit_to_delete():
+    return 'Выберите лимит для удаления'
+
+
 def make_text_and_dict_limits(session, limits):
     ids_limits = {}
     text = ''
@@ -47,6 +51,15 @@ def make_text_and_dict_limits(session, limits):
         text += '{} {}\n'.format(index + 1, text_limit(session, limit))
         ids_limits[index + 1] = limit.id
     return text, ids_limits
+
+
+def text_confirm_delete_limit(session, limit):
+    return 'Вы уверены что хотите удалить этот лимит?\n' \
+           '{}'.format(text_limit(session, limit))
+
+
+def text_delete_success():
+    return 'Данный лимит успешно удален!'
 
 
 def text_to_edit_limit(session, limit):

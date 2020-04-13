@@ -14,7 +14,7 @@ from bot.conversations.limits.messages import text_timeout, text_exit_point, tex
     text_choose_category, text_to_write_money, text_error_write_money, text_success_add_limit, \
     make_text_and_dict_limits, text_to_edit_limit, text_choose_edit_type, text_edit_type_success, \
     text_choose_edit_category, get_text_limit_category, text_edit_category_success, text_edit_amount_money_success, \
-    text_choose_limit_to_edit
+    text_choose_limit_to_edit, text_choose_limit_to_delete, text_confirm_delete_limit, text_delete_success
 from bot.conversations.limits.states import States
 from bot.keyboards import keyboard_confirm
 from bot.models import Limit, User, TypeLimit, CategoryConsumption
@@ -46,22 +46,62 @@ def handler_main_menu(update, context):
     elif update.message.text == Buttons.edit:
         return to_edit_limit(update, context)
     elif update.message.text == Buttons.delete:
-        ...
+        return to_delete_limit(update, context)
+
+
+def to_delete_limit(update, context):
+    context.user_data['back_func'] = to_main_menu
+    update.message.reply_text(text=text_choose_limit_to_delete())
+    send_message_choose_limit(update, context)
+    return States.TO_CHOOSE_DELETE_LIMIT
+
+
+@exit_dialog
+@back
+def handler_choose_limit_to_delete(update, context):
+    ids_limits = context.user_data['ids_limits']
+    if int(update.message.text) in list(ids_limits.keys()):
+        context.user_data['id_limit_to_delete'] = int(update.message.text)
+        return to_confirm_delete(update, context)
+
+
+def to_confirm_delete(update, context):
+    context.user_data['back_func'] = to_delete_limit
+    limit = session.query(Limit).get(context.user_data['id_limit_to_delete'])
+    update.message.reply_text(text=text_confirm_delete_limit(session, limit),
+                              reply_markup=keyboard_confirm)
+    return States.TO_CONFIRM_DELETE_LIMIT
+
+
+@exit_dialog
+@back
+def handler_confirm_delete_limit(update, context):
+    if not update.message.text == Buttons.confirm:
+        return
+    limit = session.query(Limit).get(context.user_data['id_limit_to_delete'])
+    session.delete(limit)
+    session.commit()
+    update.message.reply_text(text=text_delete_success())
+    return to_main_menu(update, context)
 
 
 def to_edit_limit(update: Update, context: CallbackContext):
     context.user_data['back_func'] = to_main_menu
+    update.message.reply_text(text=text_choose_limit_to_edit())
+    send_message_choose_limit(update, context)
+    return States.TO_CHOOSE_EDIT_LIMIT
+
+
+def send_message_choose_limit(update, context):
     user = User.get_user_by_telegram_user_id(session, update.message.from_user.id)
     limits = session.query(Limit).filter(
         Limit.user_id == user.id
     ).all()
     text, ids_limits = make_text_and_dict_limits(session, limits)
     context.user_data['ids_limits'] = ids_limits
-    update.message.reply_text(text=text_choose_limit_to_edit())
     update.message.reply_text(text=text,
                               reply_markup=make_keyboard_choose_limits(ids_limits),
                               parse_mode=telegram.ParseMode.HTML)
-    return States.TO_CHOOSE_EDIT_LIMIT
 
 
 @back
@@ -341,6 +381,12 @@ limits_conversation_handler = ConversationHandler(
         States.TO_EDIT_WRITE_MONEY: [MessageHandler(Filters.text,
                                                     handler_edit_write_money,
                                                     pass_user_data=True)],
+        States.TO_CHOOSE_DELETE_LIMIT: [MessageHandler(Filters.text,
+                                                    handler_choose_limit_to_delete,
+                                                    pass_user_data=True)],
+        States.TO_CONFIRM_DELETE_LIMIT: [MessageHandler(Filters.text,
+                                                       handler_confirm_delete_limit,
+                                                       pass_user_data=True)],
 
     },
     conversation_timeout=config['conversations']['timeout'],
