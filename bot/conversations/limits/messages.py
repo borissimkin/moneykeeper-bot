@@ -36,6 +36,47 @@ def text_success_add_limit():
     return 'Лимит успешно добавлен!'
 
 
+def text_choose_limit_to_edit():
+    return 'Выберите лимит для изменения'
+
+
+def make_text_and_dict_limits(session, limits):
+    ids_limits = {}
+    text = ''
+    for index, limit in enumerate(limits):
+        text += '{} {}\n'.format(index + 1, text_limit(session, limit))
+        ids_limits[index + 1] = limit.id
+    return text, ids_limits
+
+
+def text_to_edit_limit(session, limit):
+    return 'Что вы хотите изменить в этом лимите?\n' \
+           '{}'.format(text_limit(session, limit))
+
+
+def text_choose_edit_type():
+    return 'На какой тип вы хотите изменить?'
+
+
+def text_edit_type_success(old_type: str, new_type: str):
+    return 'Тип данного лимита изменен с <b>{}</b> на <b>{}</b>.'.format(old_type.title(),
+                                                                         new_type.title())
+
+
+def text_choose_edit_category():
+    return 'Выберите новую категорию лимита.'
+
+
+def text_edit_category_success(old_category: str, new_category: str):
+    return 'Категория данного лимита измененена с <b>{}</b> на <b>{}</b>.'.format(old_category,
+                                                                                  new_category)
+
+
+def text_edit_amount_money_success(old_amount_money: float, new_amount_money: float):
+    return 'Количество денег на лимит изменено с <b>{}</b> на <b>{}</b>.'.format(round(old_amount_money, 2),
+                                                                                 round(new_amount_money), 2)
+
+
 def text_main_menu(session, limits, now):
     if not limits:
         return text_no_limits()
@@ -87,5 +128,3 @@ def text_limit_for_general_info(session, limit, now):
                                         category,
                                         int(current_amount_money),
                                         int(limit.amount_money))
-
-
