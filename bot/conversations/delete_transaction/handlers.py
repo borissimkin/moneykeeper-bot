@@ -87,6 +87,6 @@ delete_transaction = ConversationHandler(
     },
     conversation_timeout=config['conversations']['timeout'],
     fallbacks=[CommandHandler('exit_point', exit_point)],
-
+    allow_reentry=True,
     name="delete_transaction",
 )

@@ -74,6 +74,6 @@ time_period = ConversationHandler(
     },
     conversation_timeout=config['conversations']['timeout'],
     fallbacks=[CommandHandler('exit_point', exit_point)],
-
+    allow_reentry=True,
     name="specify_time_period",
 )

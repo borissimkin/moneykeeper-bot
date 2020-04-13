@@ -1,9 +1,10 @@
 import datetime
+import enum
 
 from sqlalchemy import Integer, Column, String, ForeignKey, create_engine, Float, DateTime
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, validates
 
 from contextlib import contextmanager
 
@@ -213,6 +214,51 @@ class Consumption(Base):
         for c in consumptions:
             session.delete(c)
         session.commit()
+
+
+class TypeLimit(enum.Enum):
+    DAILY, WEEKLY, MONTHLY = range(3)
+
+    @classmethod
+    def has_value(cls, value):
+        return value in cls._value2member_map_
+
+    @classmethod
+    def text_type(cls, value):
+        if value == cls.DAILY.value:
+            return 'суточный'
+        elif value == cls.WEEKLY.value:
+            return 'недельный'
+        elif value == cls.MONTHLY.value:
+            return 'месячный'
+
+
+class Limit(Base):
+    __tablename__ = 'limit'
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    type_limit = Column(Integer, default=0)
+    category_id = Column(Integer, ForeignKey('category_consumption.id'), nullable=True)
+    amount_money = Column(Integer, default=0)
+
+    @validates('type_limit')
+    def validate_type_limit(self, key, value):
+        assert TypeLimit.has_value(value)
+        return value
+
+    @classmethod
+    def add(cls, session, user_id, type_limit, category_id, amount_money):
+        session.add(Limit(user_id=user_id, type_limit=type_limit,
+                          category_id=category_id, amount_money=amount_money))
+        session.commit()
+
+    @classmethod
+    def get_limits_by_type(cls, session, user_id, type_limit: int):
+        return session.query(cls).filter(
+            cls.user_id == user_id,
+            cls.type_limit == type_limit
+        ).all()
 
 
 if __name__ == '__main__':
