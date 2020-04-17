@@ -1,3 +1,5 @@
+import datetime
+
 import sqlalchemy
 import telegram
 from telegram import Update
@@ -24,7 +26,8 @@ def add_user_in_db(update, session):
     user = update.message.from_user
     username = getattr(user, 'username', sqlalchemy.null())
     session.add(User(telegram_username=username, telegram_user_id=user.id,
-                     first_name=user.first_name, last_name=user.last_name))
+                     first_name=user.first_name, last_name=user.last_name,
+                     date_registration=datetime.datetime.now(), last_activity=datetime.datetime.now()))
     session.commit()
 
 

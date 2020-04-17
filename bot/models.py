@@ -36,8 +36,8 @@ class User(Base):
     telegram_user_id = Column(Integer, nullable=False)
     first_name = Column(String)
     last_name = Column(String)
-    last_activity = Column(DateTime, default=datetime.datetime.now())
-    date_registration = Column(DateTime, default=datetime.datetime.now())
+    last_activity = Column(DateTime)
+    date_registration = Column(DateTime,)
 
     def __repr__(self):
         return f"<User ('{self.id}', '{self.telegram_username}', '{self.telegram_user_id}', " \
