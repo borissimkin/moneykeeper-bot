@@ -6,7 +6,7 @@ from telegram.ext import CallbackContext
 from bot import bot, session
 from bot.conversations.statistics import prefix_query_statistics
 from bot.conversations.statistics.graph_controller import GraphController
-from bot.conversations.statistics.graphs import make_pie_graph
+from bot.conversations.statistics.graphs import make_pie_graph, make_stack_histogram_average
 from bot.conversations.statistics.keyboards import reply_main_keyboard, reply_keyboard_choose_time_period
 from bot.conversations.statistics.type_transacation_graph import TypeTransaction
 from bot.conversations.statistics.utils import get_lifetime_user, get_yesterday, \
@@ -21,7 +21,8 @@ from bot.utils import update_username, update_activity, log_handler
 @log_handler
 def entry_point_statistics(update: Update, context: CallbackContext):
     user = session.query(User).filter(User.telegram_user_id == update.message.from_user.id).first()
-    path_to_graph = make_default_graph(user)
+    # path_to_graph = make_default_graph(user)
+    path_to_graph = make_stack_histogram_average(session, user)
     graph_controller = GraphController(path_to_graph, get_lifetime_user(user, now=datetime.datetime.now()),
                                        TypeTransaction.CONSUMPTION)
     context.user_data['statistics'] = graph_controller
