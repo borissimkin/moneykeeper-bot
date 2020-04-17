@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 import datetime
+import re
 
 import sqlalchemy
 
 from bot.conversations.statistics.type_transacation_graph import TypeTransaction
 from bot.models import User, Earning, Consumption, CategoryConsumption, CategoryEarning
-from bot.utils import get_past_minutes_day
 
 
 def get_earnings_today(session, now, user: User):
@@ -149,3 +149,15 @@ def time_period_has_dash(time_period):
 
 def take_percentage_number(number, percentage):
     return (number / 100) * percentage
+
+
+def remove_emoji(text):
+    """
+    Временное(постоянное) решение ошибки с эмодзи не графиках
+    """
+    try:
+        new_text = re.findall(r'[А-Яa-я0-9\- ]+|[A-Za-z0-9\-]+', text)[0]
+    except Exception:
+        return text
+    return new_text
+

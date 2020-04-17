@@ -6,9 +6,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from bot.conversations.statistics.type_transacation_graph import TypeTransaction
+from bot.conversations.statistics.utils import remove_emoji
 
 
 def make_pie_graph(data, labels, title, type_transactions: TypeTransaction):
+    labels = [remove_emoji(label) for label in labels]
     explode = [0.01 for _ in labels]
     data = [int(x) for x in data]
     sum_data = sum(data)
